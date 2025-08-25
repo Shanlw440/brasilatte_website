@@ -47,7 +47,8 @@ export default function App() {
             veg: "Veg.",
             enquire: "Falar no WhatsApp",
             allergen: "Informações de alérgenos disponíveis mediante solicitação.",
-            subtitleHeader: "Savouries & Snacks in Oxfordshire",
+            subtitleHeader: "Salgados e lanches em Oxfordshire", // translated
+            mapBtn: "Mapa", // singular in PT
           }
         : {
             heroTitle: "Brazilian savoury & bakery — made to order.",
@@ -71,7 +72,7 @@ export default function App() {
             reviewsTitle: "Reviews",
             aboutTitle: "About us",
             aboutStory: [
-              "Hi, I’m Osana, the founder of Brasilatte.",
+              "Hi, I’m Osana — the founder of Brasilatte.",
               "I’m from Minas Gerais — home of pão de queijo and generous savouries. I taught myself at 20, in my own kitchen, chasing the flavours that felt like family gatherings.",
               "In 1997 I began selling to neighbours; by 2001 I was a chef for a company, spending ten years refining doughs, fillings, and seasoning.",
               "I lived 18 years in Madrid, carrying that love for warm, abundant food. In 2022 I moved to England and brought Minas with me: savoury snacks and bakes that feel like a hug — for a quick bite, a small party, or a big celebration.",
@@ -82,6 +83,7 @@ export default function App() {
             enquire: "Message on WhatsApp",
             allergen: "Allergen information available on request.",
             subtitleHeader: "Savouries & Snacks in Oxfordshire",
+            mapBtn: "Maps",
           },
     [lang]
   );
@@ -416,7 +418,7 @@ function HowToOrder({ copy, waLink }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Maps
+            {copy.mapBtn}
           </a>
         </div>
         <p className="mt-3 text-sm text-neutral-500">{copy.open247}</p>
@@ -514,22 +516,10 @@ function Footer({ copy }) {
           <div>
             <div className="font-semibold">Social</div>
             <div className="mt-1 flex items-center gap-2">
-              <a
-                href="https://instagram.com/brasilatte"
-                target="_blank"
-                rel="noreferrer"
-                className="p-1"
-                aria-label="Instagram"
-              >
+              <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1" aria-label="Instagram">
                 <InstagramIcon className="h-5 w-5" />
               </a>
-              <a
-                href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
-                target="_blank"
-                rel="noreferrer"
-                className="p-1"
-                aria-label="Facebook"
-              >
+              <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1" aria-label="Facebook">
                 <FacebookIcon className="h-5 w-5" />
               </a>
             </div>
@@ -540,12 +530,7 @@ function Footer({ copy }) {
       <div className="border-top border-neutral-200 bg-neutral-50">
         <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 text-xs text-neutral-500">
           Website created by{" "}
-          <a
-            className="underline hover:text-neutral-700"
-            href="https://shannonwiseanalytics.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a className="underline hover:text-neutral-700" href="https://shannonwiseanalytics.com/" target="_blank" rel="noreferrer">
             Shannon Wise
           </a>
         </div>
