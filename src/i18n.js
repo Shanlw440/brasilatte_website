@@ -27,7 +27,7 @@ export const messages = {
     menu: "Menu",
   },
   pt: {
-    since: "Desde 1995",
+    since: "Desde 1997",
     tagline: "Comida de rua brasileira autêntica",
     heroTitle: "Pastéis e coxinhas feitas na hora, aqui pertinho.",
     heroSubtitle: "Receitas de família, ingredientes do Reino Unido. Opções veg e veganas.",
