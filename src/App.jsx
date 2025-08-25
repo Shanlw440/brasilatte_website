@@ -19,6 +19,7 @@ export default function App() {
             heroTitle: "Salgados e padaria brasileira — sob encomenda.",
             heroSubtitle:
               "Pedidos avulsos e eventos. 24 horas pelo WhatsApp. Entrega por distância ou retirada em Kidlington.",
+            orderBtn: "Pedir pelo WhatsApp",
             chips: ["24/7", "Pedidos avulsos & eventos"],
             fullMenu: "Cardápio completo",
             fried: "Fritos",
@@ -36,7 +37,7 @@ export default function App() {
             reviewsTitle: "O que falam",
             aboutTitle: "Sobre nós",
             aboutStory: [
-              "Olá, sou a Osana, fundadora da Brasilatte.",
+              "Olá, sou a Osana — fundadora da Brasilatte.",
               "Sou mineira — terra do pão de queijo e dos salgados bem-feitos. Aprendi sozinha, aos 20 anos, na cozinha de casa, tentando reproduzir os sabores que me lembravam família e festa.",
               "Em 1997 comecei a vender para os vizinhos; deu tão certo que, em 2001, me tornei chef numa empresa, onde passei 10 anos aperfeiçoando massas, recheios e temperos.",
               "Morei 18 anos em Madri, levando comigo o gosto por mesa farta e comida acolhedora. Em 2022 cheguei à Inglaterra e trouxe de Minas a mesma vontade: fazer salgados e doces que dão abraço — para um lanche rápido, uma festa pequena ou um grande evento.",
@@ -52,6 +53,7 @@ export default function App() {
             heroTitle: "Brazilian savoury & bakery — made to order.",
             heroSubtitle:
               "Single orders and events. Message 24/7 on WhatsApp. Delivery charged by distance or pick up in Kidlington.",
+            orderBtn: "Order on WhatsApp",
             chips: ["24/7", "Single orders & events"],
             fullMenu: "Full menu",
             fried: "Fried",
@@ -59,7 +61,7 @@ export default function App() {
             boxesTitle: "Snack boxes (mix or single flavour)",
             box50: "50 pieces — £24",
             box100: "100 pieces — £39.90",
-            pies: "Pies", // <-- EN uses Pies
+            pies: "Pies",
             piesSizes: "Sizes: Small £30 · Medium £38 · Big £50",
             bakery: "Bakery",
             commercial: "Commercial sale — negotiate price",
@@ -119,10 +121,22 @@ function Header({ lang, setLang, copy }) {
           <div className="flex flex-col items-start">
             <img src={Logo} alt="Brasilatte logo" className="h-16 w-auto" />
             <div className="mt-1 flex items-center gap-2">
-              <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Instagram @brasilatte">
+              <a
+                href="https://instagram.com/brasilatte"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1 rounded-md hover:bg-neutral-100"
+                aria-label="Instagram @brasilatte"
+              >
                 <InstagramIcon className="h-5 w-5" />
               </a>
-              <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Facebook">
+              <a
+                href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1 rounded-md hover:bg-neutral-100"
+                aria-label="Facebook"
+              >
                 <FacebookIcon className="h-5 w-5" />
               </a>
             </div>
@@ -130,24 +144,38 @@ function Header({ lang, setLang, copy }) {
           <FlagToggle lang={lang} setLang={setLang} />
         </div>
 
+        {/* Phone: brand line centered */}
         <div className="md:hidden mt-2 text-center">
           <div className="inline-flex items-center gap-2">
             <h1 className="text-lg font-extrabold tracking-tight">
-              Br<span style={{ color: brand.green }}>a</span>sil<span style={{ color: brand.yellow }}>a</span>tte
+              Br<span style={{ color: brand.green }}>a</span>sil
+              <span style={{ color: brand.yellow }}>a</span>tte
             </h1>
             <img src={BR} alt="" className="h-4 w-auto" />
           </div>
           <div className="text-xs text-neutral-600">{copy.subtitleHeader}</div>
         </div>
 
-        {/* Desktop */}
+        {/* Tablet/Desktop */}
         <div className="hidden md:flex items-center gap-4 relative">
           <img src={Logo} alt="Brasilatte logo" className="h-32 lg:h-36 w-auto" />
           <div className="flex items-center gap-2">
-            <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Instagram @brasilatte">
+            <a
+              href="https://instagram.com/brasilatte"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1 rounded-md hover:bg-neutral-100"
+              aria-label="Instagram @brasilatte"
+            >
               <InstagramIcon className="h-5 w-5" />
             </a>
-            <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Facebook">
+            <a
+              href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1 rounded-md hover:bg-neutral-100"
+              aria-label="Facebook"
+            >
               <FacebookIcon className="h-5 w-5" />
             </a>
           </div>
@@ -155,7 +183,8 @@ function Header({ lang, setLang, copy }) {
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none">
             <div className="inline-flex items-center gap-2">
               <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight">
-                Br<span style={{ color: brand.green }}>a</span>sil<span style={{ color: brand.yellow }}>a</span>tte
+                Br<span style={{ color: brand.green }}>a</span>sil
+                <span style={{ color: brand.yellow }}>a</span>tte
               </h1>
               <img src={BR} alt="" className="h-5 w-auto" />
             </div>
@@ -181,16 +210,22 @@ function FlagToggle({ lang, setLang }) {
     <div className="inline-flex rounded-full border border-neutral-300 bg-white overflow-hidden text-sm">
       <button
         onClick={() => setLang("en")}
-        className={`px-2 py-1.5 flex items-center gap-2 ${lang === "en" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"}`}
-        aria-pressed={lang === "en"} title="English"
+        className={`px-2 py-1.5 flex items-center gap-2 ${
+          lang === "en" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"
+        }`}
+        aria-pressed={lang === "en"}
+        title="English"
       >
         <img src={UK} alt="English (UK)" className="h-4 w-auto" />
         <span>EN</span>
       </button>
       <button
         onClick={() => setLang("pt")}
-        className={`px-2 py-1.5 flex items-center gap-2 ${lang === "pt" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"}`}
-        aria-pressed={lang === "pt"} title="Português (Brasil)"
+        className={`px-2 py-1.5 flex items-center gap-2 ${
+          lang === "pt" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"
+        }`}
+        aria-pressed={lang === "pt"}
+        title="Português (Brasil)"
       >
         <img src={BR} alt="Português (Brasil)" className="h-4 w-auto" />
         <span>PT-BR</span>
@@ -203,20 +238,26 @@ function FlagToggle({ lang, setLang }) {
 function Hero({ copy, waLink, sinceLabel }) {
   return (
     <section className="max-w-6xl mx-auto px-3 md:px-4 pt-4 md:pt-6 pb-8 md:pb-12 grid grid-cols-2 gap-3 sm:gap-4 md:gap-10 items-center">
+      {/* Left: text */}
       <div className="min-w-0">
         <div className="text-xs uppercase tracking-wider text-neutral-500">{sinceLabel}</div>
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight mt-1">{copy.heroTitle}</h2>
-        <p className="mt-2 sm:mt-3 md:mt-4 text-sm sm:text-base md:text-lg text-neutral-700">{copy.heroSubtitle}</p>
+        <p className="mt-2 sm:mt-3 md:mt-4 text-sm sm:text-base md:text-lg text-neutral-700">
+          {copy.heroSubtitle}
+        </p>
+
         <div className="mt-5 sm:mt-6">
           <a
             href={waLink}
             className="inline-block px-3 sm:px-4 py-2 rounded-xl text-white font-semibold shadow-soft"
             style={{ backgroundColor: brand.green }}
-            target="_blank" rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            Order on WhatsApp
+            {copy.orderBtn}
           </a>
         </div>
+
         <div className="mt-5 sm:mt-6 flex items-center gap-3 md:gap-4 text-xs sm:text-sm text-neutral-600 flex-wrap">
           {copy.chips.map((c) => (
             <span key={c}>{c}</span>
@@ -224,6 +265,7 @@ function Hero({ copy, waLink, sinceLabel }) {
         </div>
       </div>
 
+      {/* Right: photo */}
       <div className="min-w-0 mt-2 sm:mt-0">
         <div className="rounded-xl md:rounded-3xl bg-white shadow-soft p-2 sm:p-3 md:p-4">
           <div className="rounded-lg md:rounded-2xl overflow-hidden">
@@ -231,7 +273,9 @@ function Hero({ copy, waLink, sinceLabel }) {
               src={MainPhoto}
               alt="Brasilatte — freshly made Brazilian snacks"
               className="w-full h-[190px] sm:h-[240px] md:h-[340px] lg:h-[400px] object-contain object-center"
-              loading="eager" decoding="async" fetchpriority="high"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
             />
           </div>
         </div>
@@ -260,9 +304,21 @@ function MenuSections({ lang, copy }) {
   ];
 
   const pies = [
-    { en: "Chicken pie (chicken, mozzarella, tomatoes)", pt: "Torta de frango (frango, mozzarella, tomate)", note: copy.piesSizes },
-    { en: "Chicken empadão (chicken, mozzarella, requeijão, olives; optional sweetcorn, peas)", pt: "Empadão de frango (frango, mozzarella, requeijão, azeitona; opcional milho, ervilha)", note: copy.piesSizes },
-    { en: "Cold pie — chicken or tuna (carrots, mayo, requeijão, batata palha; topped with mash or mayo)", pt: "Torta fria — frango ou atum (cenoura, maionese, requeijão, batata palha; cobertura purê de batata ou maionese)", note: copy.piesSizes },
+    {
+      en: "Chicken pie (chicken, mozzarella, tomatoes)",
+      pt: "Torta de frango (frango, mozzarella, tomate)",
+      note: copy.piesSizes,
+    },
+    {
+      en: "Chicken empadão (chicken, mozzarella, requeijão, olives; optional sweetcorn, peas)",
+      pt: "Empadão de frango (frango, mozzarella, requeijão, azeitona; opcional milho, ervilha)",
+      note: copy.piesSizes,
+    },
+    {
+      en: "Cold pie — chicken or tuna (carrots, mayo, requeijão, batata palha; topped with mash or mayo)",
+      pt: "Torta fria — frango ou atum (cenoura, maionese, requeijão, batata palha; cobertura purê de batata ou maionese)",
+      note: copy.piesSizes,
+    },
   ];
 
   const bakery = [
@@ -286,14 +342,18 @@ function MenuSections({ lang, copy }) {
           <div className="text-neutral-600">{lang === "pt" ? "Fritos • Assados" : "Fried • Baked"}</div>
         </div>
         <div className="flex gap-3 text-sm font-semibold">
-          <div className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-200"> {copy.box50} </div>
-          <div className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-200"> {copy.box100} </div>
+          <div className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-200">{copy.box50}</div>
+          <div className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-200">{copy.box100}</div>
         </div>
       </div>
 
       <MenuGrid title={copy.fried} items={fried.map((i) => ({ name: label(i), tag: i.tag }))} />
       <MenuGrid title={copy.baked} items={baked.map((i) => ({ name: label(i) }))} />
-      <MenuGrid title={copy.pies} subtitle={copy.piesSizes} items={pies.map((p) => ({ name: label(p), note: p.note }))} />
+      <MenuGrid
+        title={copy.pies}
+        subtitle={copy.piesSizes}
+        items={pies.map((p) => ({ name: label(p), note: p.note }))}
+      />
       <MenuGrid title={copy.bakery} items={bakery.map((b) => ({ name: label(b), note: b.note }))} />
 
       <div className="mt-6 text-sm text-neutral-600">{copy.commercial}</div>
@@ -342,9 +402,10 @@ function HowToOrder({ copy, waLink }) {
             href={waLink}
             className="px-4 py-2 rounded-xl text-white font-semibold shadow-soft"
             style={{ backgroundColor: brand.green }}
-            target="_blank" rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            WhatsApp
+            {copy.orderBtn}
           </a>
           <a
             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -352,7 +413,8 @@ function HowToOrder({ copy, waLink }) {
             )}`}
             className="px-4 py-2 rounded-xl font-semibold"
             style={{ backgroundColor: brand.blue, color: "white" }}
-            target="_blank" rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Maps
           </a>
@@ -384,6 +446,7 @@ function Reviews({ copy }) {
     <section id="reviews" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
       <div className="text-xs uppercase tracking-wider text-neutral-500">{copy.reviewsTitle}</div>
 
+      {/* Mobile: swipeable cards */}
       <div className="mt-3 md:hidden -mx-3 px-3 overflow-x-auto flex gap-3 snap-x snap-mandatory">
         {reviews.map((r, idx) => (
           <div key={idx} className="min-w-[85%] snap-center rounded-2xl border border-neutral-200 bg-white p-5">
@@ -393,6 +456,7 @@ function Reviews({ copy }) {
         ))}
       </div>
 
+      {/* Desktop */}
       <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
         {reviews.map((r, idx) => (
           <div key={idx} className="rounded-2xl border border-neutral-200 bg-white p-5">
@@ -450,10 +514,22 @@ function Footer({ copy }) {
           <div>
             <div className="font-semibold">Social</div>
             <div className="mt-1 flex items-center gap-2">
-              <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1" aria-label="Instagram">
+              <a
+                href="https://instagram.com/brasilatte"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1"
+                aria-label="Instagram"
+              >
                 <InstagramIcon className="h-5 w-5" />
               </a>
-              <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1" aria-label="Facebook">
+              <a
+                href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1"
+                aria-label="Facebook"
+              >
                 <FacebookIcon className="h-5 w-5" />
               </a>
             </div>
@@ -464,7 +540,12 @@ function Footer({ copy }) {
       <div className="border-top border-neutral-200 bg-neutral-50">
         <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 text-xs text-neutral-500">
           Website created by{" "}
-          <a className="underline hover:text-neutral-700" href="https://shannonwiseanalytics.com/" target="_blank" rel="noreferrer">
+          <a
+            className="underline hover:text-neutral-700"
+            href="https://shannonwiseanalytics.com/"
+            target="_blank"
+            rel="noreferrer"
+          >
             Shannon Wise
           </a>
         </div>
@@ -476,7 +557,16 @@ function Footer({ copy }) {
 /* ================= Icons ================= */
 function InstagramIcon({ className = "h-5 w-5" }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
       <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
