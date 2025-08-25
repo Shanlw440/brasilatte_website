@@ -54,7 +54,7 @@ export default function App() {
             heroTitle: "Brazilian savoury & bakery — made to order.",
             heroSubtitle:
               "Single orders and events. Message 24/7 on WhatsApp. Delivery charged by distance or pick up in Kidlington.",
-            chips: ["24/7", "Single orders & events"],
+            chips: ["24/7", "Single orders & events", "Weddings & baby showers"],
             fullMenu: "Full menu",
             fried: "Fried",
             baked: "Baked",
@@ -110,69 +110,109 @@ export default function App() {
   );
 }
 
-/* ================= Header (bigger logo, social icons next to it) ================= */
+/* ================= Header (mobile-friendly) ================= */
 
 function Header({ lang, setLang, copy, waLink }) {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-neutral-200">
-      <div className="max-w-6xl mx-auto px-3 md:px-4 py-5 md:py-6 flex items-center gap-3 md:gap-4 relative">
-        {/* Left: bigger logo + social icons */}
-        <div className="flex items-center gap-2">
-          <a href="#top" className="shrink-0 inline-flex items-center" aria-label="Brasilatte home">
-            {/* bumped from h-24/28/32 to h-28/32/36 */}
-            <img src={Logo} alt="Brasilatte logo" className="h-28 md:h-32 lg:h-36 w-auto" />
-          </a>
-          <div className="flex items-center gap-1.5 ml-1">
+      <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 md:py-5">
+        {/* Phone layout: two rows so nothing overlaps */}
+        <div className="flex items-center justify-between md:hidden">
+          <div className="flex items-center gap-2">
+            <img src={Logo} alt="Brasilatte logo" className="h-16 w-auto" />
+            {/* socials next to logo */}
             <a
               href="https://instagram.com/brasilatte"
-              aria-label="Instagram @brasilatte"
               target="_blank"
               rel="noreferrer"
+              aria-label="Instagram @brasilatte"
               className="p-1 rounded-md hover:bg-neutral-100"
-              title="Instagram"
             >
               <InstagramIcon className="h-5 w-5" />
             </a>
             <a
               href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
-              aria-label="Facebook"
               target="_blank"
               rel="noreferrer"
+              aria-label="Facebook"
               className="p-1 rounded-md hover:bg-neutral-100"
-              title="Facebook"
             >
               <FacebookIcon className="h-5 w-5" />
             </a>
           </div>
-        </div>
-
-        {/* Center: Brasilatte with coloured a’s + 🇧🇷 + subheader */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none">
-          <div className="inline-flex items-center gap-2">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-extrabold tracking-tight">
-              Br
-              <span style={{ color: brand.green }}>a</span>
-              sil
-              <span style={{ color: brand.yellow }}>a</span>
-              tte
-            </h1>
-            <img src={BR} alt="" className="h-4 md:h-5 w-auto" />
+          <div className="flex items-center gap-2">
+            <FlagToggle lang={lang} setLang={setLang} />
+            <a
+              href={waLink}
+              className="px-3 py-1.5 rounded-lg text-white text-sm"
+              style={{ backgroundColor: brand.green }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp
+            </a>
           </div>
-          <div className="mt-0.5 text-[11px] md:text-xs text-neutral-600">{copy.subtitleHeader}</div>
         </div>
 
-        {/* Right: language toggle + WhatsApp (no flag) */}
-        <div className="ml-auto flex items-center gap-2 md:gap-3">
-          <FlagToggle lang={lang} setLang={setLang} />
-          <a
-            href={waLink}
-            className="px-3 py-1.5 rounded-lg text-white text-sm"
-            style={{ backgroundColor: brand.green }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            WhatsApp
-          </a>
+        {/* brand line on phone */}
+        <div className="md:hidden mt-2 text-center">
+          <div className="inline-flex items-center gap-2">
+            <h1 className="text-lg font-extrabold tracking-tight">
+              Br<span style={{ color: brand.green }}>a</span>sil
+              <span style={{ color: brand.yellow }}>a</span>tte
+            </h1>
+            <img src={BR} alt="" className="h-4 w-auto" />
+          </div>
+          <div className="text-xs text-neutral-600">{copy.subtitleHeader}</div>
+        </div>
+
+        {/* Tablet/Desktop layout stays centred like before */}
+        <div className="hidden md:flex items-center gap-4 relative">
+          <img src={Logo} alt="Brasilatte logo" className="h-32 lg:h-36 w-auto" />
+          <div className="flex items-center gap-2">
+            <a
+              href="https://instagram.com/brasilatte"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram @brasilatte"
+              className="p-1 rounded-md hover:bg-neutral-100"
+            >
+              <InstagramIcon className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook"
+              className="p-1 rounded-md hover:bg-neutral-100"
+            >
+              <FacebookIcon className="h-5 w-5" />
+            </a>
+          </div>
+
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none">
+            <div className="inline-flex items-center gap-2">
+              <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight">
+                Br<span style={{ color: brand.green }}>a</span>sil
+                <span style={{ color: brand.yellow }}>a</span>tte
+              </h1>
+              <img src={BR} alt="" className="h-5 w-auto" />
+            </div>
+            <div className="mt-1 text-xs text-neutral-600">{copy.subtitleHeader}</div>
+          </div>
+
+          <div className="ml-auto flex items-center gap-3">
+            <FlagToggle lang={lang} setLang={setLang} />
+            <a
+              href={waLink}
+              className="px-3 py-1.5 rounded-lg text-white text-sm"
+              style={{ backgroundColor: brand.green }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp
+            </a>
+          </div>
         </div>
       </div>
       <Ribbon />
@@ -303,9 +343,7 @@ function MenuSections({ lang, copy }) {
       <div className="mt-4 rounded-2xl border border-neutral-200 bg-white p-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div className="text-sm">
           <div className="font-semibold">{copy.boxesTitle}</div>
-          <div className="text-neutral-600">
-            {lang === "pt" ? "Fritos • Assados" : "Fried • Baked"}
-          </div>
+          <div className="text-neutral-600">{lang === "pt" ? "Fritos • Assados" : "Fried • Baked"}</div>
         </div>
         <div className="flex gap-3 text-sm font-semibold">
           <div className="px-3 py-1.5 rounded-lg bg-neutral-900 text-white">{copy.box50}</div>
@@ -329,22 +367,26 @@ function MenuSections({ lang, copy }) {
   );
 }
 
+/* 3-up photo-first cards on phones */
 function MenuGrid({ title, items, subtitle }) {
   return (
     <section className="mt-8">
       <div className="text-xs uppercase tracking-wider text-neutral-500">{title}</div>
       {subtitle && <div className="mt-1 text-sm text-neutral-600">{subtitle}</div>}
-      <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      {/* 3 columns by default (phones), keep good spacing */}
+      <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-3">
         {items.map((i) => (
-          <div key={i.name} className="rounded-2xl border border-neutral-200 bg-white overflow-hidden">
-            <div className="aspect-[4/3] bg-neutral-100 grid place-items-center text-neutral-500 text-sm">
+          <div key={i.name} className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
+            {/* square image area */}
+            <div className="aspect-square bg-neutral-100 grid place-items-center text-neutral-500 text-[11px] sm:text-sm">
               Photo coming soon
             </div>
-            <div className="p-4">
-              <div className="font-semibold">{i.name}</div>
-              {i.note && <div className="text-sm text-neutral-600 mt-1">{i.note}</div>}
+            <div className="p-2 sm:p-3">
+              <div className="text-xs sm:text-sm font-semibold leading-snug">{i.name}</div>
+              {i.note && <div className="hidden sm:block text-xs text-neutral-600 mt-1">{i.note}</div>}
               {i.tag && (
-                <span className="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-700">
+                <span className="hidden sm:inline-block mt-2 text-[10px] px-2 py-0.5 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-700">
                   {i.tag}
                 </span>
               )}
@@ -411,12 +453,26 @@ function Reviews({ copy }) {
           { name: "Moisés", quote: "Os pastéis chegaram crocantes e fresquinhos. Vou pedir de novo." },
         ];
 
+  /* On phones: one horizontal row with swipe (snap). On md+: grid. */
   return (
     <section id="reviews" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
       <div className="text-xs uppercase tracking-wider text-neutral-500">{copy.reviewsTitle}</div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
-        {reviews.map((r) => (
-          <div key={r.name} className="rounded-2xl border border-neutral-200 bg-white p-5">
+
+      <div className="mt-3 md:hidden -mx-3 px-3 overflow-x-auto flex gap-3 snap-x snap-mandatory">
+        {reviews.map((r, idx) => (
+          <div
+            key={idx}
+            className="min-w-[85%] snap-center rounded-2xl border border-neutral-200 bg-white p-5"
+          >
+            <p className="italic">“{r.quote}”</p>
+            <div className="mt-3 text-sm text-neutral-600">— {r.name}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
+        {reviews.map((r, idx) => (
+          <div key={idx} className="rounded-2xl border border-neutral-200 bg-white p-5">
             <p className="italic">“{r.quote}”</p>
             <div className="mt-3 text-sm text-neutral-600">— {r.name}</div>
           </div>
@@ -450,55 +506,52 @@ function About({ copy }) {
   );
 }
 
-/* ================= Footer ================= */
+/* ================= Footer (compact bar on phones) ================= */
 
 function Footer({ copy }) {
   return (
-    <footer className="border-t border-neutral-200 mt-16">
-      <div className="max-w-6xl mx-auto px-3 md:px-4 py-10 grid md:grid-cols-4 gap-8 text-sm">
-        <div>
-          <div className="font-semibold">Brasilatte</div>
-          <p className="text-neutral-600 mt-2">
-            {copy.open247} {copy.catering}
-          </p>
-        </div>
-        <div>
-          <div className="font-semibold">Contact</div>
-          <p className="text-neutral-600 mt-2">
-            WhatsApp:{" "}
-            <a className="underline" href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">
-              07594 754 354
-            </a>
-          </p>
-          <p className="text-neutral-600">Kidlington · OX5</p>
-        </div>
-        <div>
-          <div className="font-semibold">Find us</div>
-          <p className="text-neutral-600 mt-2">65 Oxford Road, Kidlington, OX5 2BS</p>
-        </div>
-        <div>
-          <div className="font-semibold">Social</div>
-          <p className="text-neutral-600 mt-2">
-            <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="underline">
-              Instagram @brasilatte
-            </a>
-          </p>
-          <p className="text-neutral-600">
-            <a
-              href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
-              target="_blank"
-              rel="noreferrer"
-              className="underline"
-            >
-              Facebook
-            </a>
-          </p>
+    <footer className="mt-12">
+      <div className="bg-neutral-50 border-t border-neutral-200">
+        <div className="max-w-6xl mx-auto px-3 md:px-4 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 items-start text-sm">
+          <div>
+            <div className="font-semibold">Brasilatte</div>
+            <p className="text-neutral-600 mt-1">{copy.open247}</p>
+          </div>
+          <div>
+            <div className="font-semibold">Contact</div>
+            <p className="text-neutral-600 mt-1">
+              WhatsApp:{" "}
+              <a className="underline" href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">
+                07594 754 354
+              </a>
+            </p>
+          </div>
+          <div>
+            <div className="font-semibold">Find us</div>
+            <p className="text-neutral-600 mt-1">65 Oxford Road, Kidlington, OX5 2BS</p>
+          </div>
+          <div>
+            <div className="font-semibold">Social</div>
+            <div className="mt-1 flex items-center gap-2">
+              <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1">
+                <InstagramIcon className="h-5 w-5" />
+              </a>
+              <a
+                href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1"
+              >
+                <FacebookIcon className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Attribution */}
-      <div className="border-t border-neutral-200">
-        <div className="max-w-6xl mx-auto px-3 md:px-4 py-4 text-xs text-neutral-500">
+      <div className="border-t border-neutral-200 bg-neutral-50">
+        <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 text-xs text-neutral-500">
           Website created by{" "}
           <a
             className="underline hover:text-neutral-700"
@@ -514,7 +567,7 @@ function Footer({ copy }) {
   );
 }
 
-/* ================= Icons (inline SVGs) ================= */
+/* ================= Icons (inline SVG) ================= */
 
 function InstagramIcon({ className = "h-5 w-5" }) {
   return (
@@ -537,12 +590,7 @@ function InstagramIcon({ className = "h-5 w-5" }) {
 
 function FacebookIcon({ className = "h-5 w-5" }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-    >
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M22 12.07C22 6.5 17.52 2 11.93 2 6.35 2 1.86 6.5 1.86 12.07c0 4.99 3.64 9.13 8.41 9.93v-7.02H7.9v-2.9h2.37V9.37c0-2.34 1.39-3.63 3.52-3.63.72 0 1.84.12 2.3.24v2.53h-1.3c-1.28 0-1.68.8-1.68 1.62v1.95h2.85l-.46 2.9h-2.39V22c4.77-.8 8.41-4.94 8.41-9.93z" />
     </svg>
   );
