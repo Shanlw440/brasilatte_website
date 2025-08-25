@@ -110,9 +110,9 @@ export default function App() {
   );
 }
 
-/* ================= Header (mobile-friendly) ================= */
+/* ================= Header (mobile-friendly, no WhatsApp button in bar) ================= */
 
-function Header({ lang, setLang, copy, waLink }) {
+function Header({ lang, setLang, copy /* waLink unused in header now */ }) {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-neutral-200">
       <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 md:py-5">
@@ -142,15 +142,7 @@ function Header({ lang, setLang, copy, waLink }) {
           </div>
           <div className="flex items-center gap-2">
             <FlagToggle lang={lang} setLang={setLang} />
-            <a
-              href={waLink}
-              className="px-3 py-1.5 rounded-lg text-white text-sm"
-              style={{ backgroundColor: brand.green }}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              WhatsApp
-            </a>
+            {/* WhatsApp button removed */}
           </div>
         </div>
 
@@ -203,15 +195,7 @@ function Header({ lang, setLang, copy, waLink }) {
 
           <div className="ml-auto flex items-center gap-3">
             <FlagToggle lang={lang} setLang={setLang} />
-            <a
-              href={waLink}
-              className="px-3 py-1.5 rounded-lg text-white text-sm"
-              style={{ backgroundColor: brand.green }}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              WhatsApp
-            </a>
+            {/* WhatsApp button removed */}
           </div>
         </div>
       </div>
@@ -374,7 +358,7 @@ function MenuGrid({ title, items, subtitle }) {
       <div className="text-xs uppercase tracking-wider text-neutral-500">{title}</div>
       {subtitle && <div className="mt-1 text-sm text-neutral-600">{subtitle}</div>}
 
-      {/* 3 columns by default (phones), keep good spacing */}
+      {/* 3 columns by default (phones) */}
       <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-3">
         {items.map((i) => (
           <div key={i.name} className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
@@ -453,17 +437,14 @@ function Reviews({ copy }) {
           { name: "Moisés", quote: "Os pastéis chegaram crocantes e fresquinhos. Vou pedir de novo." },
         ];
 
-  /* On phones: one horizontal row with swipe (snap). On md+: grid. */
+  // Phones: horizontal swipe row; md+: grid
   return (
     <section id="reviews" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
       <div className="text-xs uppercase tracking-wider text-neutral-500">{copy.reviewsTitle}</div>
 
       <div className="mt-3 md:hidden -mx-3 px-3 overflow-x-auto flex gap-3 snap-x snap-mandatory">
         {reviews.map((r, idx) => (
-          <div
-            key={idx}
-            className="min-w-[85%] snap-center rounded-2xl border border-neutral-200 bg-white p-5"
-          >
+          <div key={idx} className="min-w-[85%] snap-center rounded-2xl border border-neutral-200 bg-white p-5">
             <p className="italic">“{r.quote}”</p>
             <div className="mt-3 text-sm text-neutral-600">— {r.name}</div>
           </div>
@@ -515,7 +496,9 @@ function Footer({ copy }) {
         <div className="max-w-6xl mx-auto px-3 md:px-4 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 items-start text-sm">
           <div>
             <div className="font-semibold">Brasilatte</div>
-            <p className="text-neutral-600 mt-1">{copy.open247}</p>
+            <p className="text-neutral-600 mt-1">
+              {copy.open247} {copy.catering}
+            </p>
           </div>
           <div>
             <div className="font-semibold">Contact</div>
