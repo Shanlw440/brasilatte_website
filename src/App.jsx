@@ -19,7 +19,7 @@ export default function App() {
             heroTitle: "Salgados e padaria brasileira — sob encomenda.",
             heroSubtitle:
               "Pedidos avulsos e eventos. 24 horas pelo WhatsApp. Entrega por distância ou retirada em Kidlington.",
-            chips: ["24/7", "Pedidos avulsos & eventos"],                // ⬅ removed weddings chip
+            chips: ["24/7", "Pedidos avulsos & eventos"],
             fullMenu: "Cardápio completo",
             fried: "Fritos",
             baked: "Assados",
@@ -36,6 +36,7 @@ export default function App() {
             reviewsTitle: "O que falam",
             aboutTitle: "Sobre nós",
             aboutStory: [
+              "Olá, sou a Osana, fundadora da Brasilatte.",
               "Sou mineira — terra do pão de queijo e dos salgados bem-feitos. Aprendi sozinha, aos 20 anos, na cozinha de casa, tentando reproduzir os sabores que me lembravam família e festa.",
               "Em 1997 comecei a vender para os vizinhos; deu tão certo que, em 2001, me tornei chef numa empresa, onde passei 10 anos aperfeiçoando massas, recheios e temperos.",
               "Morei 18 anos em Madri, levando comigo o gosto por mesa farta e comida acolhedora. Em 2022 cheguei à Inglaterra e trouxe de Minas a mesma vontade: fazer salgados e doces que dão abraço — para um lanche rápido, uma festa pequena ou um grande evento.",
@@ -51,14 +52,14 @@ export default function App() {
             heroTitle: "Brazilian savoury & bakery — made to order.",
             heroSubtitle:
               "Single orders and events. Message 24/7 on WhatsApp. Delivery charged by distance or pick up in Kidlington.",
-            chips: ["24/7", "Single orders & events"],                   // ⬅ removed weddings chip
+            chips: ["24/7", "Single orders & events"],
             fullMenu: "Full menu",
             fried: "Fried",
             baked: "Baked",
             boxesTitle: "Snack boxes (mix or single flavour)",
             box50: "50 pieces — £24",
             box100: "100 pieces — £39.90",
-            pies: "Tortas (Pies)",
+            pies: "Pies", // <-- EN uses Pies
             piesSizes: "Sizes: Small £30 · Medium £38 · Big £50",
             bakery: "Bakery",
             commercial: "Commercial sale — negotiate price",
@@ -68,6 +69,7 @@ export default function App() {
             reviewsTitle: "Reviews",
             aboutTitle: "About us",
             aboutStory: [
+              "Hi, I’m Osana, the founder of Brasilatte.",
               "I’m from Minas Gerais — home of pão de queijo and generous savouries. I taught myself at 20, in my own kitchen, chasing the flavours that felt like family gatherings.",
               "In 1997 I began selling to neighbours; by 2001 I was a chef for a company, spending ten years refining doughs, fillings, and seasoning.",
               "I lived 18 years in Madrid, carrying that love for warm, abundant food. In 2022 I moved to England and brought Minas with me: savoury snacks and bakes that feel like a hug — for a quick bite, a small party, or a big celebration.",
@@ -107,32 +109,20 @@ export default function App() {
   );
 }
 
-/* ================= Header (icons UNDER the logo on phones) ================= */
+/* ================= Header ================= */
 function Header({ lang, setLang, copy }) {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-neutral-200">
       <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 md:py-5">
-        {/* Phone: left column = logo with socials UNDER it */}
+        {/* Phone: logo with socials underneath, language toggle on the right */}
         <div className="flex items-start justify-between md:hidden">
           <div className="flex flex-col items-start">
             <img src={Logo} alt="Brasilatte logo" className="h-16 w-auto" />
             <div className="mt-1 flex items-center gap-2">
-              <a
-                href="https://instagram.com/brasilatte"
-                target="_blank"
-                rel="noreferrer"
-                className="p-1 rounded-md hover:bg-neutral-100"
-                aria-label="Instagram @brasilatte"
-              >
+              <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Instagram @brasilatte">
                 <InstagramIcon className="h-5 w-5" />
               </a>
-              <a
-                href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
-                target="_blank"
-                rel="noreferrer"
-                className="p-1 rounded-md hover:bg-neutral-100"
-                aria-label="Facebook"
-              >
+              <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Facebook">
                 <FacebookIcon className="h-5 w-5" />
               </a>
             </div>
@@ -140,19 +130,17 @@ function Header({ lang, setLang, copy }) {
           <FlagToggle lang={lang} setLang={setLang} />
         </div>
 
-        {/* Brand line on phone */}
         <div className="md:hidden mt-2 text-center">
           <div className="inline-flex items-center gap-2">
             <h1 className="text-lg font-extrabold tracking-tight">
-              Br<span style={{ color: brand.green }}>a</span>sil
-              <span style={{ color: brand.yellow }}>a</span>tte
+              Br<span style={{ color: brand.green }}>a</span>sil<span style={{ color: brand.yellow }}>a</span>tte
             </h1>
             <img src={BR} alt="" className="h-4 w-auto" />
           </div>
           <div className="text-xs text-neutral-600">{copy.subtitleHeader}</div>
         </div>
 
-        {/* Tablet/Desktop */}
+        {/* Desktop */}
         <div className="hidden md:flex items-center gap-4 relative">
           <img src={Logo} alt="Brasilatte logo" className="h-32 lg:h-36 w-auto" />
           <div className="flex items-center gap-2">
@@ -167,8 +155,7 @@ function Header({ lang, setLang, copy }) {
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none">
             <div className="inline-flex items-center gap-2">
               <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight">
-                Br<span style={{ color: brand.green }}>a</span>sil
-                <span style={{ color: brand.yellow }}>a</span>tte
+                Br<span style={{ color: brand.green }}>a</span>sil<span style={{ color: brand.yellow }}>a</span>tte
               </h1>
               <img src={BR} alt="" className="h-5 w-auto" />
             </div>
@@ -212,17 +199,14 @@ function FlagToggle({ lang, setLang }) {
   );
 }
 
-/* ================= Hero (phone: photo lower & bigger; extra spacing) ================= */
+/* ================= Hero ================= */
 function Hero({ copy, waLink, sinceLabel }) {
   return (
     <section className="max-w-6xl mx-auto px-3 md:px-4 pt-4 md:pt-6 pb-8 md:pb-12 grid grid-cols-2 gap-3 sm:gap-4 md:gap-10 items-center">
-      {/* Left: text */}
       <div className="min-w-0">
         <div className="text-xs uppercase tracking-wider text-neutral-500">{sinceLabel}</div>
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight mt-1">{copy.heroTitle}</h2>
         <p className="mt-2 sm:mt-3 md:mt-4 text-sm sm:text-base md:text-lg text-neutral-700">{copy.heroSubtitle}</p>
-
-        {/* more gap before/after button */}
         <div className="mt-5 sm:mt-6">
           <a
             href={waLink}
@@ -233,7 +217,6 @@ function Hero({ copy, waLink, sinceLabel }) {
             Order on WhatsApp
           </a>
         </div>
-
         <div className="mt-5 sm:mt-6 flex items-center gap-3 md:gap-4 text-xs sm:text-sm text-neutral-600 flex-wrap">
           {copy.chips.map((c) => (
             <span key={c}>{c}</span>
@@ -241,7 +224,6 @@ function Hero({ copy, waLink, sinceLabel }) {
         </div>
       </div>
 
-      {/* Right: photo (lower and a bit bigger on phones) */}
       <div className="min-w-0 mt-2 sm:mt-0">
         <div className="rounded-xl md:rounded-3xl bg-white shadow-soft p-2 sm:p-3 md:p-4">
           <div className="rounded-lg md:rounded-2xl overflow-hidden">
@@ -297,15 +279,15 @@ function MenuSections({ lang, copy }) {
     <section id="menu" className="max-w-6xl mx-auto px-3 md:px-4 py-8">
       <h3 className="text-3xl font-extrabold tracking-tight">{copy.fullMenu}</h3>
 
-      {/* Boxes banner */}
+      {/* Snack box banner – both pills neutral (not clickable) */}
       <div className="mt-4 rounded-2xl border border-neutral-200 bg-white p-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div className="text-sm">
           <div className="font-semibold">{copy.boxesTitle}</div>
           <div className="text-neutral-600">{lang === "pt" ? "Fritos • Assados" : "Fried • Baked"}</div>
         </div>
         <div className="flex gap-3 text-sm font-semibold">
-          <div className="px-3 py-1.5 rounded-lg bg-neutral-900 text-white">{copy.box50}</div>
-          <div className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-200">{copy.box100}</div>
+          <div className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-200"> {copy.box50} </div>
+          <div className="px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-200"> {copy.box100} </div>
         </div>
       </div>
 
@@ -360,8 +342,7 @@ function HowToOrder({ copy, waLink }) {
             href={waLink}
             className="px-4 py-2 rounded-xl text-white font-semibold shadow-soft"
             style={{ backgroundColor: brand.green }}
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
           >
             WhatsApp
           </a>
@@ -371,8 +352,7 @@ function HowToOrder({ copy, waLink }) {
             )}`}
             className="px-4 py-2 rounded-xl font-semibold"
             style={{ backgroundColor: brand.blue, color: "white" }}
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
           >
             Maps
           </a>
