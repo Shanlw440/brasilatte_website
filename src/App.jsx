@@ -5,10 +5,7 @@ import BR from "./assets/flags/br.svg";
 import MainPhoto from "./assets/main_photo.JPG?url";
 import { messages } from "./i18n";
 
-/** Brand colours */
 const brand = { green: "#099E48", yellow: "#FFDD00", blue: "#0A2B7E" };
-
-/** WhatsApp (07594754354 -> E.164 without + or spaces) */
 const WHATSAPP_NUMBER = "447594754354";
 
 export default function App() {
@@ -99,7 +96,7 @@ export default function App() {
 
   return (
     <div id="top" className="min-h-screen text-neutral-900">
-      <Header lang={lang} setLang={setLang} copy={copy} waLink={waLink} />
+      <Header lang={lang} setLang={setLang} copy={copy} />
       <Hero copy={copy} waLink={waLink} sinceLabel={t.since} />
       <MenuSections lang={lang} copy={copy} />
       <HowToOrder copy={copy} waLink={waLink} />
@@ -110,74 +107,43 @@ export default function App() {
   );
 }
 
-/* ================= Header (mobile-friendly, no WhatsApp button in bar) ================= */
-
-function Header({ lang, setLang, copy /* waLink unused in header now */ }) {
+/* ================= Header (no WhatsApp in bar) ================= */
+function Header({ lang, setLang, copy }) {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-neutral-200">
       <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 md:py-5">
-        {/* Phone layout: two rows so nothing overlaps */}
+        {/* Phone: two rows */}
         <div className="flex items-center justify-between md:hidden">
           <div className="flex items-center gap-2">
             <img src={Logo} alt="Brasilatte logo" className="h-16 w-auto" />
-            {/* socials next to logo */}
-            <a
-              href="https://instagram.com/brasilatte"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram @brasilatte"
-              className="p-1 rounded-md hover:bg-neutral-100"
-            >
+            <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Instagram">
               <InstagramIcon className="h-5 w-5" />
             </a>
-            <a
-              href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Facebook"
-              className="p-1 rounded-md hover:bg-neutral-100"
-            >
+            <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Facebook">
               <FacebookIcon className="h-5 w-5" />
             </a>
           </div>
-          <div className="flex items-center gap-2">
-            <FlagToggle lang={lang} setLang={setLang} />
-            {/* WhatsApp button removed */}
-          </div>
+          <FlagToggle lang={lang} setLang={setLang} />
         </div>
 
-        {/* brand line on phone */}
         <div className="md:hidden mt-2 text-center">
           <div className="inline-flex items-center gap-2">
             <h1 className="text-lg font-extrabold tracking-tight">
-              Br<span style={{ color: brand.green }}>a</span>sil
-              <span style={{ color: brand.yellow }}>a</span>tte
+              Br<span style={{ color: brand.green }}>a</span>sil<span style={{ color: brand.yellow }}>a</span>tte
             </h1>
             <img src={BR} alt="" className="h-4 w-auto" />
           </div>
           <div className="text-xs text-neutral-600">{copy.subtitleHeader}</div>
         </div>
 
-        {/* Tablet/Desktop layout stays centred like before */}
+        {/* Tablet/Desktop */}
         <div className="hidden md:flex items-center gap-4 relative">
           <img src={Logo} alt="Brasilatte logo" className="h-32 lg:h-36 w-auto" />
           <div className="flex items-center gap-2">
-            <a
-              href="https://instagram.com/brasilatte"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram @brasilatte"
-              className="p-1 rounded-md hover:bg-neutral-100"
-            >
+            <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Instagram">
               <InstagramIcon className="h-5 w-5" />
             </a>
-            <a
-              href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Facebook"
-              className="p-1 rounded-md hover:bg-neutral-100"
-            >
+            <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Facebook">
               <FacebookIcon className="h-5 w-5" />
             </a>
           </div>
@@ -185,17 +151,15 @@ function Header({ lang, setLang, copy /* waLink unused in header now */ }) {
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none">
             <div className="inline-flex items-center gap-2">
               <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight">
-                Br<span style={{ color: brand.green }}>a</span>sil
-                <span style={{ color: brand.yellow }}>a</span>tte
+                Br<span style={{ color: brand.green }}>a</span>sil<span style={{ color: brand.yellow }}>a</span>tte
               </h1>
               <img src={BR} alt="" className="h-5 w-auto" />
             </div>
             <div className="mt-1 text-xs text-neutral-600">{copy.subtitleHeader}</div>
           </div>
 
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto">
             <FlagToggle lang={lang} setLang={setLang} />
-            {/* WhatsApp button removed */}
           </div>
         </div>
       </div>
@@ -213,22 +177,16 @@ function FlagToggle({ lang, setLang }) {
     <div className="inline-flex rounded-full border border-neutral-300 bg-white overflow-hidden text-sm">
       <button
         onClick={() => setLang("en")}
-        className={`px-2 py-1.5 flex items-center gap-2 ${
-          lang === "en" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"
-        }`}
-        aria-pressed={lang === "en"}
-        title="English"
+        className={`px-2 py-1.5 flex items-center gap-2 ${lang === "en" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"}`}
+        aria-pressed={lang === "en"} title="English"
       >
         <img src={UK} alt="English (UK)" className="h-4 w-auto" />
         <span>EN</span>
       </button>
       <button
         onClick={() => setLang("pt")}
-        className={`px-2 py-1.5 flex items-center gap-2 ${
-          lang === "pt" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"
-        }`}
-        aria-pressed={lang === "pt"}
-        title="Português (Brasil)"
+        className={`px-2 py-1.5 flex items-center gap-2 ${lang === "pt" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"}`}
+        aria-pressed={lang === "pt"} title="Português (Brasil)"
       >
         <img src={BR} alt="Português (Brasil)" className="h-4 w-auto" />
         <span>PT-BR</span>
@@ -237,44 +195,41 @@ function FlagToggle({ lang, setLang }) {
   );
 }
 
-/* ================= Hero ================= */
-
+/* ================= Hero (two columns even on phones) ================= */
 function Hero({ copy, waLink, sinceLabel }) {
   return (
-    <section className="max-w-6xl mx-auto px-3 md:px-4 pt-4 md:pt-6 pb-10 md:pb-12 grid md:grid-cols-2 gap-6 md:gap-10 items-center">
-      <div>
+    <section className="max-w-6xl mx-auto px-3 md:px-4 pt-4 md:pt-6 pb-8 md:pb-12 grid grid-cols-2 gap-3 sm:gap-4 md:gap-10 items-center">
+      {/* Left: text */}
+      <div className="min-w-0">
         <div className="text-xs uppercase tracking-wider text-neutral-500">{sinceLabel}</div>
-        <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mt-1">{copy.heroTitle}</h2>
-        <p className="mt-3 md:mt-4 text-base md:text-lg text-neutral-700">{copy.heroSubtitle}</p>
-        <div className="mt-5 md:mt-6 flex flex-wrap gap-3">
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight mt-1">{copy.heroTitle}</h2>
+        <p className="mt-2 sm:mt-3 md:mt-4 text-sm sm:text-base md:text-lg text-neutral-700">{copy.heroSubtitle}</p>
+        <div className="mt-3 sm:mt-4 md:mt-6 flex flex-wrap gap-3">
           <a
             href={waLink}
-            className="px-4 py-2 rounded-xl text-white font-semibold shadow-soft"
+            className="px-3 sm:px-4 py-2 rounded-xl text-white font-semibold shadow-soft"
             style={{ backgroundColor: brand.green }}
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
           >
             Order on WhatsApp
           </a>
         </div>
-        <div className="mt-5 md:mt-6 flex items-center gap-3 md:gap-4 text-sm text-neutral-600 flex-wrap">
+        <div className="mt-3 sm:mt-4 md:mt-6 flex items-center gap-3 md:gap-4 text-xs sm:text-sm text-neutral-600 flex-wrap">
           {copy.chips.map((c) => (
             <span key={c}>{c}</span>
           ))}
         </div>
       </div>
 
-      {/* Right column: hero photo */}
-      <div>
-        <div className="rounded-2xl md:rounded-3xl bg-white shadow-soft p-3 md:p-4">
-          <div className="rounded-xl md:rounded-2xl overflow-hidden">
+      {/* Right: photo */}
+      <div className="min-w-0">
+        <div className="rounded-xl md:rounded-3xl bg-white shadow-soft p-2 sm:p-3 md:p-4">
+          <div className="rounded-lg md:rounded-2xl overflow-hidden">
             <img
               src={MainPhoto}
               alt="Brasilatte — freshly made Brazilian snacks"
-              className="w-full h-[220px] sm:h-[260px] md:h-[340px] lg:h-[400px] object-contain object-center"
-              loading="eager"
-              decoding="async"
-              fetchpriority="high"
+              className="w-full h-[160px] sm:h-[220px] md:h-[340px] lg:h-[400px] object-contain object-center"
+              loading="eager" decoding="async" fetchpriority="high"
             />
           </div>
         </div>
@@ -284,7 +239,6 @@ function Hero({ copy, waLink, sinceLabel }) {
 }
 
 /* ================= Menu ================= */
-
 function MenuSections({ lang, copy }) {
   const fried = [
     { en: "Coxinha de frango (chicken coxinha)", pt: "Coxinha de frango", tag: "" },
@@ -323,7 +277,6 @@ function MenuSections({ lang, copy }) {
     <section id="menu" className="max-w-6xl mx-auto px-3 md:px-4 py-8">
       <h3 className="text-3xl font-extrabold tracking-tight">{copy.fullMenu}</h3>
 
-      {/* Boxes info (Fried + Baked) */}
       <div className="mt-4 rounded-2xl border border-neutral-200 bg-white p-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div className="text-sm">
           <div className="font-semibold">{copy.boxesTitle}</div>
@@ -335,34 +288,26 @@ function MenuSections({ lang, copy }) {
         </div>
       </div>
 
-      {/* Fried */}
       <MenuGrid title={copy.fried} items={fried.map((i) => ({ name: label(i), tag: i.tag }))} />
-      {/* Baked */}
       <MenuGrid title={copy.baked} items={baked.map((i) => ({ name: label(i) }))} />
-      {/* Pies */}
       <MenuGrid title={copy.pies} subtitle={copy.piesSizes} items={pies.map((p) => ({ name: label(p), note: p.note }))} />
-      {/* Bakery */}
       <MenuGrid title={copy.bakery} items={bakery.map((b) => ({ name: label(b), note: b.note }))} />
 
-      {/* Notes */}
       <div className="mt-6 text-sm text-neutral-600">{copy.commercial}</div>
       <div className="text-xs text-neutral-500 mt-1">{copy.allergen}</div>
     </section>
   );
 }
 
-/* 3-up photo-first cards on phones */
+/* 3-up grid on phones */
 function MenuGrid({ title, items, subtitle }) {
   return (
     <section className="mt-8">
       <div className="text-xs uppercase tracking-wider text-neutral-500">{title}</div>
       {subtitle && <div className="mt-1 text-sm text-neutral-600">{subtitle}</div>}
-
-      {/* 3 columns by default (phones) */}
       <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-3">
         {items.map((i) => (
           <div key={i.name} className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-            {/* square image area */}
             <div className="aspect-square bg-neutral-100 grid place-items-center text-neutral-500 text-[11px] sm:text-sm">
               Photo coming soon
             </div>
@@ -383,7 +328,6 @@ function MenuGrid({ title, items, subtitle }) {
 }
 
 /* ================= How to order ================= */
-
 function HowToOrder({ copy, waLink }) {
   return (
     <section id="howto" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
@@ -396,8 +340,7 @@ function HowToOrder({ copy, waLink }) {
             href={waLink}
             className="px-4 py-2 rounded-xl text-white font-semibold shadow-soft"
             style={{ backgroundColor: brand.green }}
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
           >
             WhatsApp
           </a>
@@ -407,8 +350,7 @@ function HowToOrder({ copy, waLink }) {
             )}`}
             className="px-4 py-2 rounded-xl font-semibold"
             style={{ backgroundColor: brand.blue, color: "white" }}
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
           >
             Maps
           </a>
@@ -420,7 +362,6 @@ function HowToOrder({ copy, waLink }) {
 }
 
 /* ================= Reviews ================= */
-
 function Reviews({ copy }) {
   const reviews =
     copy.reviewsTitle === "Reviews"
@@ -437,11 +378,11 @@ function Reviews({ copy }) {
           { name: "Moisés", quote: "Os pastéis chegaram crocantes e fresquinhos. Vou pedir de novo." },
         ];
 
-  // Phones: horizontal swipe row; md+: grid
   return (
     <section id="reviews" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
       <div className="text-xs uppercase tracking-wider text-neutral-500">{copy.reviewsTitle}</div>
 
+      {/* phones: swipe row */}
       <div className="mt-3 md:hidden -mx-3 px-3 overflow-x-auto flex gap-3 snap-x snap-mandatory">
         {reviews.map((r, idx) => (
           <div key={idx} className="min-w-[85%] snap-center rounded-2xl border border-neutral-200 bg-white p-5">
@@ -451,6 +392,7 @@ function Reviews({ copy }) {
         ))}
       </div>
 
+      {/* md+: grid */}
       <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
         {reviews.map((r, idx) => (
           <div key={idx} className="rounded-2xl border border-neutral-200 bg-white p-5">
@@ -464,7 +406,6 @@ function Reviews({ copy }) {
 }
 
 /* ================= About ================= */
-
 function About({ copy }) {
   return (
     <section id="about" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
@@ -487,19 +428,12 @@ function About({ copy }) {
   );
 }
 
-/* ================= Footer (compact bar on phones) ================= */
-
+/* ================= Footer (compact; removed long “Brasilatte” text) ================= */
 function Footer({ copy }) {
   return (
     <footer className="mt-12">
       <div className="bg-neutral-50 border-t border-neutral-200">
-        <div className="max-w-6xl mx-auto px-3 md:px-4 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 items-start text-sm">
-          <div>
-            <div className="font-semibold">Brasilatte</div>
-            <p className="text-neutral-600 mt-1">
-              {copy.open247} {copy.catering}
-            </p>
-          </div>
+        <div className="max-w-6xl mx-auto px-3 md:px-4 py-5 grid grid-cols-2 md:grid-cols-3 gap-4 items-start text-sm">
           <div>
             <div className="font-semibold">Contact</div>
             <p className="text-neutral-600 mt-1">
@@ -516,15 +450,10 @@ function Footer({ copy }) {
           <div>
             <div className="font-semibold">Social</div>
             <div className="mt-1 flex items-center gap-2">
-              <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1">
+              <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1" aria-label="Instagram">
                 <InstagramIcon className="h-5 w-5" />
               </a>
-              <a
-                href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
-                target="_blank"
-                rel="noreferrer"
-                className="p-1"
-              >
+              <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1" aria-label="Facebook">
                 <FacebookIcon className="h-5 w-5" />
               </a>
             </div>
@@ -532,16 +461,10 @@ function Footer({ copy }) {
         </div>
       </div>
 
-      {/* Attribution */}
-      <div className="border-t border-neutral-200 bg-neutral-50">
+      <div className="border-top border-neutral-200 bg-neutral-50">
         <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 text-xs text-neutral-500">
           Website created by{" "}
-          <a
-            className="underline hover:text-neutral-700"
-            href="https://shannonwiseanalytics.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a className="underline hover:text-neutral-700" href="https://shannonwiseanalytics.com/" target="_blank" rel="noreferrer">
             Shannon Wise
           </a>
         </div>
@@ -550,20 +473,10 @@ function Footer({ copy }) {
   );
 }
 
-/* ================= Icons (inline SVG) ================= */
-
+/* ================= Icons ================= */
 function InstagramIcon({ className = "h-5 w-5" }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
       <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
