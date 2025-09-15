@@ -1,34 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import Logo from "./assets/BrasilLatte.png";
 import UK from "./assets/flags/uk.svg";
 import BR from "./assets/flags/br.svg";
 import MainPhoto from "./assets/main_photo.JPG?url";
 import { messages } from "./i18n";
 
-/* ===== Menu images (exact filenames you provided) ===== */
-import Img_Fritos_Bolinha from "./assets/menu/Fritos_Bolinha.jpeg";
-import Img_Fritos_Coxinha from "./assets/menu/Fritos_Coxinha.jpeg";
-import Img_Fritos_Kibe from "./assets/menu/Fritos_kibe.jpeg";
-import Img_Fritos_PastelCarne from "./assets/menu/Fritos_pastel_carne.jpeg";
-import Img_Fritos_PastelQueijo from "./assets/menu/Fritos_pastel_queijo.jpeg";
-import Img_Fritos_Risoles from "./assets/menu/Fritos_Risoles.jpeg";
+/* ====== Gallery (auto-load images & video) ====== */
+const galleryMedia = Object.values(
+  import.meta.glob("./assets/gallery/*.{jpg,jpeg,png,webp,avif,mp4,webm,ogg,mov}", {
+    eager: true,
+    as: "url",
+  })
+);
+const isVideoUrl = (u) => /\.(mp4|webm|ogg|mov)$/i.test(u);
 
-import Img_Assados_EmpadaFrango from "./assets/menu/assados_empada_frango.jpeg";
-import Img_Assados_EsfirraCarne from "./assets/menu/assados_esfirra_carne.jpeg";
-import Img_Assados_FrangoQueijo from "./assets/menu/assados_frango.jpeg";
-import Img_Assados_PresuntoQueijo from "./assets/menu/assados_presunto.jpeg";
-import Img_Assados_Salsicha from "./assets/menu/assados_salsicha.jpeg";
-
-import Img_Padaria_Biscoito from "./assets/menu/padaria_biscoito.jpeg";
-import Img_Padaria_Hungaras from "./assets/menu/padaria_hungaras.jpeg";
-import Img_Padaria_PaoCaseiro from "./assets/menu/padaria_pao_caseiro.jpeg";
-import Img_Padaria_PaoDeQueijo from "./assets/menu/padaria_pao_de_queijo.jpeg";
-import Img_Padaria_Rosca from "./assets/menu/padaria_rosca.jpeg";
-
-/* These filenames include diacritics; ensure your project is UTF-8 encoded. */
-import Img_Torta_Empadao from "./assets/menu/torta_empadão.jpeg";
-import Img_Torta_Frango from "./assets/menu/torta_frango.jpeg";
-import Img_Torta_TunaFria from "./assets/menu/torta_tuna.jpeg";
+/* ====== About photo (optional) ======
+   Save as: src/assets/about_osana.(webp|jpg|jpeg|png|avif) */
+const aboutImg =
+  Object.values(
+    import.meta.glob("./assets/about_osana.{webp,jpg,jpeg,png,avif}", {
+      eager: true,
+      as: "url",
+    })
+  )[0] || null;
 
 const brand = { green: "#099E48", yellow: "#FFDD00", blue: "#0A2B7E" };
 const WHATSAPP_NUMBER = "447594754354";
@@ -36,6 +30,19 @@ const WHATSAPP_NUMBER = "447594754354";
 export default function App() {
   const [lang, setLang] = useState(() => localStorage.getItem("brasil_latte_lang") || "en");
   const t = useMemo(() => messages[lang] || messages.en, [lang]);
+
+  // Lightbox state for gallery
+  const [lightbox, setLightbox] = useState({ open: false, index: 0 });
+  const openLightbox = (index) => setLightbox({ open: true, index });
+  const closeLightbox = () => setLightbox({ open: false, index: 0 });
+  const prevLightbox = useCallback(
+    () => setLightbox((s) => ({ open: true, index: (s.index - 1 + galleryMedia.length) % galleryMedia.length })),
+    []
+  );
+  const nextLightbox = useCallback(
+    () => setLightbox((s) => ({ open: true, index: (s.index + 1) % galleryMedia.length })),
+    []
+  );
 
   const copy = useMemo(
     () =>
@@ -51,7 +58,7 @@ export default function App() {
             baked: "Assados",
             boxesTitle: "Caixas de salgados (mix ou um sabor)",
             box50: "50 unidades — £24",
-            box100: "100 unidades — £39.90",
+            box100: "100 unidades — £39.00",
             pies: "Tortas (Pies)",
             piesSizes: "Tamanhos: pequena £30 · média £38 · grande £50",
             bakery: "Padaria",
@@ -74,6 +81,8 @@ export default function App() {
             allergen: "Informações de alérgenos disponíveis mediante solicitação.",
             subtitleHeader: "Salgados e lanches em Oxfordshire",
             mapBtn: "Mapa",
+            galleryEyebrow: "Destaques",
+            galleryTitle: "Galeria",
           }
         : {
             heroTitle: "Brazilian savoury & bakery — made to order.",
@@ -86,7 +95,7 @@ export default function App() {
             baked: "Baked",
             boxesTitle: "Snack boxes (mix or single flavour)",
             box50: "50 pieces — £24",
-            box100: "100 pieces — £39.90",
+            box100: "100 pieces — £39.00",
             pies: "Pies",
             piesSizes: "Sizes: Small £30 · Medium £38 · Big £50",
             bakery: "Bakery",
@@ -109,6 +118,8 @@ export default function App() {
             allergen: "Allergen information available on request.",
             subtitleHeader: "Savouries & Snacks in Oxfordshire",
             mapBtn: "Maps",
+            galleryEyebrow: "Highlights",
+            galleryTitle: "Gallery",
           },
     [lang]
   );
@@ -130,10 +141,22 @@ export default function App() {
       <Header lang={lang} setLang={setLang} copy={copy} />
       <Hero copy={copy} waLink={waLink} sinceLabel={t.since} />
       <MenuSections lang={lang} copy={copy} />
+      <Gallery copy={copy} onOpen={openLightbox} />
       <HowToOrder copy={copy} waLink={waLink} />
       <Reviews copy={copy} />
       <About copy={copy} />
       <Footer copy={copy} />
+
+      {/* Lightbox */}
+      <Lightbox
+        open={lightbox.open}
+        index={lightbox.index}
+        media={galleryMedia}
+        isVideoUrl={isVideoUrl}
+        onClose={closeLightbox}
+        onPrev={prevLightbox}
+        onNext={nextLightbox}
+      />
     </div>
   );
 }
@@ -143,6 +166,7 @@ function Header({ lang, setLang, copy }) {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-neutral-200">
       <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 md:py-5">
+        {/* Phone */}
         <div className="flex items-start justify-between md:hidden">
           <div className="flex flex-col items-start">
             <img src={Logo} alt="Brasilatte logo" className="h-16 w-auto" />
@@ -161,7 +185,8 @@ function Header({ lang, setLang, copy }) {
         <div className="md:hidden mt-2 text-center">
           <div className="inline-flex items-center gap-2">
             <h1 className="text-lg font-extrabold tracking-tight">
-              Br<span style={{ color: brand.green }}>a</span>sil<span style={{ color: brand.yellow }}>a</span>tte
+              Br<span style={{ color: brand.green }}>a</span>sil
+              <span style={{ color: brand.yellow }}>a</span>tte
             </h1>
             <img src={BR} alt="" className="h-4 w-auto" />
           </div>
@@ -183,7 +208,8 @@ function Header({ lang, setLang, copy }) {
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none">
             <div className="inline-flex items-center gap-2">
               <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight">
-                Br<span style={{ color: brand.green }}>a</span>sil<span style={{ color: brand.yellow }}>a</span>tte
+                Br<span style={{ color: brand.green }}>a</span>sil
+                <span style={{ color: brand.yellow }}>a</span>tte
               </h1>
               <img src={BR} alt="" className="h-5 w-auto" />
             </div>
@@ -228,7 +254,6 @@ function FlagToggle({ lang, setLang }) {
 }
 
 /* ================= Hero ================= */
-/* Phone tweaks: smaller CTA, extra spacing, image nudged down */
 function Hero({ copy, waLink, sinceLabel }) {
   return (
     <section className="max-w-6xl mx-auto px-3 md:px-4 pt-4 md:pt-6 pb-8 md:pb-12 grid grid-cols-2 gap-4 md:gap-10 items-start">
@@ -274,37 +299,37 @@ function Hero({ copy, waLink, sinceLabel }) {
   );
 }
 
-/* ================= Menu ================= */
+/* ================= Menu (image-less grid of cards) ================= */
 function MenuSections({ lang, copy }) {
   const fried = [
-    { en: "Coxinha de frango (chicken coxinha)", pt: "Coxinha de frango", tag: "", img: Img_Fritos_Coxinha },
-    { en: "Bolinha de queijo (cheese balls)", pt: "Bolinha de queijo", tag: copy.veg, img: Img_Fritos_Bolinha },
-    { en: "Risoles de carne (meat risoles)", pt: "Risoles de carne", tag: "", img: Img_Fritos_Risoles },
-    { en: "Pastel de carne (meat pastel)", pt: "Pastel de carne", tag: "", img: Img_Fritos_PastelCarne },
-    { en: "Pastel de queijo (cheese pastel)", pt: "Pastel de queijo", tag: copy.veg, img: Img_Fritos_PastelQueijo },
-    { en: "Kibe", pt: "Kibe", tag: "", img: Img_Fritos_Kibe },
+    { en: "Coxinha de frango (chicken coxinha)", pt: "Coxinha de frango" },
+    { en: "Bolinha de queijo (cheese balls)", pt: "Bolinha de queijo", tag: copy.veg },
+    { en: "Risoles de carne (meat risoles)", pt: "Risoles de carne" },
+    { en: "Pastel de carne (meat pastel)", pt: "Pastel de carne" },
+    { en: "Pastel de queijo (cheese pastel)", pt: "Pastel de queijo", tag: copy.veg },
+    { en: "Kibe", pt: "Kibe" },
   ];
 
   const baked = [
-    { en: "Esfirra de carne — open or closed", pt: "Esfirra de carne — aberta ou fechada", img: Img_Assados_EsfirraCarne },
-    { en: "Empada de frango (chicken empada)", pt: "Empada de frango", img: Img_Assados_EmpadaFrango },
-    { en: "Ham & cheese roll", pt: "Enroladinho de presunto e queijo", img: Img_Assados_PresuntoQueijo },
-    { en: "Chicken & cheese roll", pt: "Enroladinho de frango com queijo", img: Img_Assados_FrangoQueijo },
-    { en: "Sausage roll", pt: "Enroladinho de salsicha", img: Img_Assados_Salsicha },
+    { en: "Esfirra de carne — open or closed", pt: "Esfirra de carne — aberta ou fechada" },
+    { en: "Empada de frango (chicken empada)", pt: "Empada de frango" },
+    { en: "Ham & cheese roll", pt: "Enroladinho de presunto e queijo" },
+    { en: "Chicken & cheese roll", pt: "Enroladinho de frango com queijo" },
+    { en: "Sausage roll", pt: "Enroladinho de salsicha" },
   ];
 
   const pies = [
-    { en: "Chicken pie (chicken, mozzarella, tomatoes)", pt: "Torta de frango (frango, mozzarella, tomate)", note: copy.piesSizes, img: Img_Torta_Frango },
-    { en: "Chicken empadão (chicken, mozzarella, requeijão, olives; optional sweetcorn, peas)", pt: "Empadão de frango (frango, mozzarella, requeijão, azeitona; opcional milho, ervilha)", note: copy.piesSizes, img: Img_Torta_Empadao },
-    { en: "Cold pie — chicken or tuna (carrots, mayo, requeijão, batata palha; topped with mash or mayo)", pt: "Torta fria — frango ou atum (cenoura, maionese, requeijão, batata palha; cobertura purê de batata ou maionese)", note: copy.piesSizes, img: Img_Torta_TunaFria },
+    { en: "Chicken pie (chicken, mozzarella, tomatoes)", pt: "Torta de frango (frango, mozzarella, tomate)" },
+    { en: "Chicken empadão (chicken, mozzarella, requeijão, olives; optional sweetcorn, peas)", pt: "Empadão de frango (frango, mozzarella, requeijão, azeitona; opcional milho, ervilha)" },
+    { en: "Cold pie — chicken or tuna (carrots, mayo, requeijão, batata palha; topped with mash or mayo)", pt: "Torta fria — frango ou atum (cenoura, maionese, requeijão, batata palha; cobertura purê de batata ou maionese)" },
   ];
 
   const bakery = [
-    { en: "Fatias Húngaras (Hungarian slices)", pt: "Fatias Húngaras", note: "£2 / unit", img: Img_Padaria_Hungaras },
-    { en: "Pão de queijo", pt: "Pão de queijo", note: "1 kg baked £22 · frozen £20", img: Img_Padaria_PaoDeQueijo },
-    { en: "Rosca (sweet ring bread)", pt: "Rosca", note: "£8 / unit", img: Img_Padaria_Rosca },
-    { en: "Biscoito de queijo (cheese biscuit)", pt: "Biscoito de queijo", note: "same price as pão de queijo", img: Img_Padaria_Biscoito },
-    { en: "Pão caseiro (homemade bread)", pt: "Pão caseiro", note: "£8 / unit", img: Img_Padaria_PaoCaseiro },
+    { en: "Fatias Húngaras (Hungarian slices)", pt: "Fatias Húngaras", note: "£2 / unit" },
+    { en: "Pão de queijo", pt: "Pão de queijo", note: "1 kg baked £22 · frozen £20" },
+    { en: "Rosca (sweet ring bread)", pt: "Rosca", note: "£8 / unit" },
+    { en: "Biscoito de queijo (cheese biscuit)", pt: "Biscoito de queijo", note: "same price as pão de queijo" },
+    { en: "Pão caseiro (homemade bread)", pt: "Pão caseiro", note: "£8 / unit" },
   ];
 
   const label = (item) => (lang === "pt" ? item.pt : item.en);
@@ -313,7 +338,7 @@ function MenuSections({ lang, copy }) {
     <section id="menu" className="max-w-6xl mx-auto px-3 md:px-4 py-8">
       <h3 className="text-3xl font-extrabold tracking-tight">{copy.fullMenu}</h3>
 
-      {/* Snack boxes (neutral pills) */}
+      {/* Snack boxes banner */}
       <div className="mt-4 rounded-2xl border border-neutral-200 bg-white p-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div className="text-sm">
           <div className="font-semibold">{copy.boxesTitle}</div>
@@ -325,10 +350,10 @@ function MenuSections({ lang, copy }) {
         </div>
       </div>
 
-      <MenuGrid title={copy.fried} items={fried.map((i) => ({ name: label(i), tag: i.tag, note: i.note, img: i.img }))} />
-      <MenuGrid title={copy.baked} items={baked.map((i) => ({ name: label(i), img: i.img }))} />
-      <MenuGrid title={copy.pies} subtitle={copy.piesSizes} items={pies.map((p) => ({ name: label(p), note: p.note, img: p.img }))} />
-      <MenuGrid title={copy.bakery} items={bakery.map((b) => ({ name: label(b), note: b.note, img: b.img }))} />
+      <MenuListSection title={copy.fried} items={fried.map((i) => ({ name: label(i), tag: i.tag }))} />
+      <MenuListSection title={copy.baked} items={baked.map((i) => ({ name: label(i) }))} />
+      <MenuListSection title={copy.pies} subtitle={copy.piesSizes} items={pies.map((p) => ({ name: label(p) }))} />
+      <MenuListSection title={copy.bakery} items={bakery.map((b) => ({ name: label(b), note: b.note }))} />
 
       <div className="mt-6 text-sm text-neutral-600">{copy.commercial}</div>
       <div className="text-xs text-neutral-500 mt-1">{copy.allergen}</div>
@@ -336,33 +361,81 @@ function MenuSections({ lang, copy }) {
   );
 }
 
-function MenuGrid({ title, items, subtitle }) {
+/* ===== Grid of compact cards: 2 / 3 / 4 per row ===== */
+function MenuListSection({ title, items, subtitle }) {
   return (
     <section className="mt-8">
       <div className="text-xs uppercase tracking-wider text-neutral-500">{title}</div>
       {subtitle && <div className="mt-1 text-sm text-neutral-600">{subtitle}</div>}
-      <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3">
+
+      <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
         {items.map((i) => (
-          <div key={i.name} className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-            <div className="aspect-square bg-neutral-50">
-              {i.img ? (
-                <img src={i.img} alt={i.name} className="w-full h-full object-cover" loading="lazy" />
-              ) : (
-                <div className="w-full h-full grid place-items-center text-neutral-500 text-[11px] sm:text-sm">Photo coming soon</div>
-              )}
-            </div>
-            <div className="p-2 sm:p-3">
-              <div className="text-xs sm:text-sm font-semibold leading-snug">{i.name}</div>
-              {i.note && <div className="hidden sm:block text-xs text-neutral-600 mt-1">{i.note}</div>}
-              {i.tag && (
-                <span className="hidden sm:inline-block mt-2 text-[10px] px-2 py-0.5 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-700">
-                  {i.tag}
-                </span>
-              )}
-            </div>
+          <div
+            key={i.name}
+            className="rounded-xl border border-neutral-200 bg-white p-3 flex flex-col"
+          >
+            <div className="font-medium leading-snug">{i.name}</div>
+
+            {i.note && (
+              <div className="text-xs text-neutral-600 mt-1">{i.note}</div>
+            )}
+
+            {i.tag && (
+              <span className="mt-2 inline-block w-fit text-[10px] px-2 py-[2px] rounded-full bg-neutral-100 border border-neutral-200 text-neutral-700">
+                {i.tag}
+              </span>
+            )}
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+/* ================= Gallery ================= */
+function Gallery({ copy, onOpen }) {
+  return (
+    <section id="gallery" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
+      <div className="text-xs uppercase tracking-wider text-neutral-500">
+        {copy.galleryEyebrow}
+      </div>
+      <h3 className="text-2xl font-extrabold tracking-tight mt-1">
+        {copy.galleryTitle}
+      </h3>
+
+      {galleryMedia.length === 0 ? (
+        <div className="mt-4 rounded-2xl border border-dashed border-neutral-300 p-6 text-neutral-600">
+          Drop media into <code>src/assets/gallery/</code> (jpg, jpeg, png, webp, avif, mp4, webm, ogg, mov) and they’ll appear here automatically.
+        </div>
+      ) : (
+        <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+          {galleryMedia.map((src, i) => (
+            <button
+              key={i}
+              onClick={() => onOpen(i)}
+              className="group aspect-square overflow-hidden rounded-xl border border-neutral-200 bg-white cursor-zoom-in"
+              aria-label={`Open media ${i + 1}`}
+            >
+              {isVideoUrl(src) ? (
+                <video
+                  src={src}
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                  muted
+                />
+              ) : (
+                <img
+                  src={src}
+                  alt={`Gallery media ${i + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                  loading="lazy"
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -452,8 +525,19 @@ function About({ copy }) {
       <div className="text-xs uppercase tracking-wider text-neutral-500">{copy.aboutTitle}</div>
       <div className="mt-3 grid md:grid-cols-2 gap-6 items-center">
         <div className="rounded-2xl md:rounded-3xl bg-white border border-neutral-200 shadow-soft p-3 md:p-4">
-          <div className="aspect-[4/3] rounded-xl md:rounded-2xl bg-neutral-100 border border-neutral-200 grid place-items-center text-neutral-500">
-            Photo coming soon
+          <div className="rounded-xl md:rounded-2xl overflow-hidden">
+            {aboutImg ? (
+              <img
+                src={aboutImg}
+                alt="Osana preparing Brazilian savouries in the kitchen"
+                className="w-full h-full object-cover aspect-[4/3]"
+                loading="lazy"
+              />
+            ) : (
+              <div className="aspect-[4/3] bg-neutral-100 border border-neutral-200 grid place-items-center text-neutral-500">
+                Photo coming soon
+              </div>
+            )}
           </div>
         </div>
         <div>
@@ -501,7 +585,7 @@ function Footer({ copy }) {
         </div>
       </div>
 
-      <div className="border-top border-neutral-200 bg-neutral-50">
+      <div className="border-t border-neutral-200 bg-neutral-50">
         <div className="max-w-6xl mx-auto px-3 md:px-4 py-3 text-xs text-neutral-500">
           Website created by{" "}
           <a className="underline hover:text-neutral-700" href="https://shannonwiseanalytics.com/" target="_blank" rel="noreferrer">
@@ -510,6 +594,74 @@ function Footer({ copy }) {
         </div>
       </div>
     </footer>
+  );
+}
+
+/* ================= Lightbox (Gallery modal) ================= */
+function Lightbox({ open, index, media, isVideoUrl, onClose, onPrev, onNext }) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") onPrev();
+      if (e.key === "ArrowRight") onNext();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose, onPrev, onNext]);
+
+  if (!open || !media?.length) return null;
+
+  const src = media[index] || null;
+  const isVid = src && isVideoUrl(src);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm grid place-items-center p-4"
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+    >
+      <div className="relative max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+        {/* Close */}
+        <button
+          onClick={onClose}
+          className="absolute -top-10 right-0 text-white/90 hover:text-white text-2xl"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+        {/* Media */}
+        <div className="w-full rounded-2xl overflow-hidden bg-black">
+          {isVid ? (
+            <video src={src} controls autoPlay playsInline className="w-full h-full max-h-[80vh] object-contain" />
+          ) : (
+            <img src={src} alt="Gallery preview" className="w-full h-full max-h-[80vh] object-contain" />
+          )}
+        </div>
+
+        {/* Prev/Next */}
+        {media.length > 1 && (
+          <>
+            <button
+              onClick={onPrev}
+              className="absolute top-1/2 -translate-y-1/2 -left-3 md:-left-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center"
+              aria-label="Previous"
+            >
+              ‹
+            </button>
+            <button
+              onClick={onNext}
+              className="absolute top-1/2 -translate-y-1/2 -right-3 md:-right-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center"
+              aria-label="Next"
+            >
+              ›
+            </button>
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 
