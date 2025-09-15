@@ -2,12 +2,68 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Brasil Latte — Bilingual (Flags)</title>
-    <meta name="description" content="White background, subtle accents, centered logo strip, flag language toggle." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Primary SEO -->
+    <title>Brasilatte — Savouries & Snacks in Oxfordshire</title>
+    <meta
+      name="description"
+      content="Brazilian savoury & bakery — made to order. Single orders and events. Message 24/7 on WhatsApp. Delivery charged by distance or pick up in Kidlington."
+    />
+    <link rel="canonical" href="https://brasilatte.com/" />
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#0A2B7E" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://brasilatte.com/" />
+    <meta property="og:title" content="Brasilatte — Savouries & Snacks in Oxfordshire" />
+    <meta property="og:description" content="Brazilian savoury & bakery — made to order. Single orders & events. WhatsApp 24/7." />
+    <meta property="og:image" content="/og-card.jpg" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:locale:alternate" content="pt_BR" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Brasilatte — Savouries & Snacks in Oxfordshire" />
+    <meta name="twitter:description" content="Brazilian savoury & bakery — made to order. Single orders & events. WhatsApp 24/7." />
+    <meta name="twitter:image" content="/og-card.jpg" />
+
+    <!-- Icons (optional) -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/icon-512.png" />
+
+    <!-- Vite entry -->
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Local Business JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Brasilatte",
+      "image": "https://brasilatte.com/og-card.jpg",
+      "url": "https://brasilatte.com/",
+      "telephone": "+44 7594 754354",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "65 Oxford Road",
+        "addressLocality": "Kidlington",
+        "postalCode": "OX5 2BS",
+        "addressCountry": "GB"
+      },
+      "sameAs": [
+        "https://instagram.com/brasilatte",
+        "https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
+      ],
+      "openingHours": "Mo-Su 00:00-23:59",
+      "priceRange": "££"
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
