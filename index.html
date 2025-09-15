@@ -4,49 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Primary SEO -->
     <title>Brasilatte — Savouries & Snacks in Oxfordshire</title>
-    <meta
-      name="description"
-      content="Brazilian savoury & bakery — made to order. Single orders and events. Message 24/7 on WhatsApp. Delivery charged by distance or pick up in Kidlington."
-    />
+    <meta name="description" content="Brazilian savoury snacks and bakery made to order in Oxfordshire. Message 24/7 on WhatsApp for single orders and events. Delivery by distance or pickup in Kidlington." />
     <link rel="canonical" href="https://brasilatte.com/" />
-
-    <!-- Theme color -->
+    <meta name="robots" content="index,follow" />
     <meta name="theme-color" content="#0A2B7E" />
+
+    <!-- Favicon (optional if you have one in /public) -->
+    <link rel="icon" href="/favicon.ico" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Brasilatte" />
     <meta property="og:url" content="https://brasilatte.com/" />
     <meta property="og:title" content="Brasilatte — Savouries & Snacks in Oxfordshire" />
-    <meta property="og:description" content="Brazilian savoury & bakery — made to order. Single orders & events. WhatsApp 24/7." />
-    <meta property="og:image" content="/og-card.jpg" />
+    <meta property="og:description" content="Brazilian savoury snacks and bakery made to order in Oxfordshire." />
+    <meta property="og:image" content="https://brasilatte.com/og-card.jpg" />
     <meta property="og:locale" content="en_GB" />
-    <meta property="og:locale:alternate" content="pt_BR" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Brasilatte — Savouries & Snacks in Oxfordshire" />
-    <meta name="twitter:description" content="Brazilian savoury & bakery — made to order. Single orders & events. WhatsApp 24/7." />
-    <meta name="twitter:image" content="/og-card.jpg" />
+    <meta name="twitter:description" content="Brazilian savoury snacks and bakery made to order in Oxfordshire." />
+    <meta name="twitter:image" content="https://brasilatte.com/og-card.jpg" />
 
-    <!-- Icons (optional) -->
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon.png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/icon-512.png" />
-
-    <!-- Vite entry -->
-    <script type="module" src="/src/main.jsx"></script>
-
-    <!-- Local Business JSON-LD -->
+    <!-- Optional structured data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "LocalBusiness",
+      "@type": "FoodEstablishment",
       "name": "Brasilatte",
       "image": "https://brasilatte.com/og-card.jpg",
       "url": "https://brasilatte.com/",
-      "telephone": "+44 7594 754354",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "65 Oxford Road",
@@ -54,16 +43,16 @@
         "postalCode": "OX5 2BS",
         "addressCountry": "GB"
       },
+      "telephone": "+44 7594 754354",
       "sameAs": [
         "https://instagram.com/brasilatte",
         "https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
-      ],
-      "openingHours": "Mo-Su 00:00-23:59",
-      "priceRange": "££"
+      ]
     }
     </script>
   </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
