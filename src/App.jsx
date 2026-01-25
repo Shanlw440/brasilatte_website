@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import Logo from "./assets/BrasilLatte.png";
 import UK from "./assets/flags/uk.svg";
 import BR from "./assets/flags/br.svg";
@@ -26,6 +26,9 @@ const aboutImg =
 
 const brand = { green: "#099E48", yellow: "#FFDD00", blue: "#0A2B7E" };
 const WHATSAPP_NUMBER = "447594754354";
+
+// ✅ Use Netlify Functions URL directly (works on Netlify + netlify dev)
+const REVIEWS_API = "/.netlify/functions/reviews";
 
 export default function App() {
   const [lang, setLang] = useState(() => localStorage.getItem("brasil_latte_lang") || "en");
@@ -143,7 +146,10 @@ export default function App() {
       <MenuSections lang={lang} copy={copy} />
       <Gallery copy={copy} onOpen={openLightbox} />
       <HowToOrder copy={copy} waLink={waLink} />
-      <Reviews copy={copy} />
+
+      {/* ✅ Live reviews + form */}
+      <Reviews copy={copy} lang={lang} />
+
       <About copy={copy} />
       <Footer copy={copy} />
 
@@ -370,15 +376,10 @@ function MenuListSection({ title, items, subtitle }) {
 
       <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
         {items.map((i) => (
-          <div
-            key={i.name}
-            className="rounded-xl border border-neutral-200 bg-white p-3 flex flex-col"
-          >
+          <div key={i.name} className="rounded-xl border border-neutral-200 bg-white p-3 flex flex-col">
             <div className="font-medium leading-snug">{i.name}</div>
 
-            {i.note && (
-              <div className="text-xs text-neutral-600 mt-1">{i.note}</div>
-            )}
+            {i.note && <div className="text-xs text-neutral-600 mt-1">{i.note}</div>}
 
             {i.tag && (
               <span className="mt-2 inline-block w-fit text-[10px] px-2 py-[2px] rounded-full bg-neutral-100 border border-neutral-200 text-neutral-700">
@@ -396,12 +397,8 @@ function MenuListSection({ title, items, subtitle }) {
 function Gallery({ copy, onOpen }) {
   return (
     <section id="gallery" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
-      <div className="text-xs uppercase tracking-wider text-neutral-500">
-        {copy.galleryEyebrow}
-      </div>
-      <h3 className="text-2xl font-extrabold tracking-tight mt-1">
-        {copy.galleryTitle}
-      </h3>
+      <div className="text-xs uppercase tracking-wider text-neutral-500">{copy.galleryEyebrow}</div>
+      <h3 className="text-2xl font-extrabold tracking-tight mt-1">{copy.galleryTitle}</h3>
 
       {galleryMedia.length === 0 ? (
         <div className="mt-4 rounded-2xl border border-dashed border-neutral-300 p-6 text-neutral-600">
@@ -474,45 +471,239 @@ function HowToOrder({ copy, waLink }) {
   );
 }
 
-/* ================= Reviews ================= */
-function Reviews({ copy }) {
-  const reviews =
+/* ================= Reviews (LIVE + Carousel + Form) ================= */
+function Reviews({ copy, lang }) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+
+  const [name, setName] = useState("");
+  const [quote, setQuote] = useState("");
+  const [rating, setRating] = useState(5);
+  const [submitMsg, setSubmitMsg] = useState("");
+
+  const rowRef = useRef(null);
+
+  const fallback =
     copy.reviewsTitle === "Reviews"
       ? [
-          { name: "Livia", quote: "The coxinhas are addictive — perfect for parties!" },
-          { name: "Marcia", quote: "Tastes like home. The empadão was a hit with the family." },
-          { name: "Joe", quote: "Great value snack boxes and fast WhatsApp replies." },
-          { name: "Moises", quote: "Pastéis came out crispy and fresh. Will order again." },
+          { id: "f1", name: "Livia", quote: "The coxinhas are addictive — perfect for parties!", rating: 5, lang: "en" },
+          { id: "f2", name: "Marcia", quote: "Tastes like home. The empadão was a hit with the family.", rating: 5, lang: "en" },
+          { id: "f3", name: "Joe", quote: "Great value snack boxes and fast WhatsApp replies.", rating: 5, lang: "en" },
+          { id: "f4", name: "Moises", quote: "Pastéis came out crispy and fresh. Will order again.", rating: 5, lang: "en" },
         ]
       : [
-          { name: "Lívia", quote: "As coxinhas são viciantes — perfeitas para festas!" },
-          { name: "Márcia", quote: "Sabor de casa. O empadão fez sucesso na família." },
-          { name: "Joe", quote: "Caixas de salgados com ótimo custo-benefício e resposta rápida no WhatsApp." },
-          { name: "Moisés", quote: "Os pastéis chegaram crocantes e fresquinhos. Vou pedir de novo." },
+          { id: "f1", name: "Lívia", quote: "As coxinhas são viciantes — perfeitas para festas!", rating: 5, lang: "pt" },
+          { id: "f2", name: "Márcia", quote: "Sabor de casa. O empadão fez sucesso na família.", rating: 5, lang: "pt" },
+          { id: "f3", name: "Joe", quote: "Caixas de salgados com ótimo custo-benefício e resposta rápida no WhatsApp.", rating: 5, lang: "pt" },
+          { id: "f4", name: "Moisés", quote: "Os pastéis chegaram crocantes e fresquinhos. Vou pedir de novo.", rating: 5, lang: "pt" },
         ];
+
+  const visible = useMemo(() => {
+    const fromApi = items.filter((r) => (lang === "pt" ? r.lang === "pt" : r.lang !== "pt"));
+    return fromApi.length ? fromApi : fallback;
+  }, [items, lang]);
+
+  const stars = (n) => "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n);
+
+  const load = useCallback(async () => {
+    setErr("");
+    setLoading(true);
+    try {
+      const res = await fetch(REVIEWS_API, { headers: { accept: "application/json" } });
+      const text = await res.text();
+      let data = null;
+      try { data = JSON.parse(text); } catch {}
+
+      if (!res.ok) throw new Error(data?.error || text || `HTTP ${res.status}`);
+
+      // supports either {ok:true,reviews:[]} or {reviews:[]}
+      const reviews = Array.isArray(data?.reviews) ? data.reviews : [];
+      setItems(reviews);
+    } catch (e) {
+      setErr(e?.message || "Failed to load reviews");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const scrollByCards = (dir) => {
+    const el = rowRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * 360, behavior: "smooth" });
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitMsg("");
+    setErr("");
+
+    try {
+      const payload = { name, quote, rating, lang };
+      const res = await fetch(REVIEWS_API, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const text = await res.text();
+      console.log("REVIEWS POST status:", res.status);
+      console.log("REVIEWS POST body:", text);
+
+      let data = null;
+      try { data = JSON.parse(text); } catch {}
+
+      if (!res.ok || !data?.ok) throw new Error(data?.error || text || `HTTP ${res.status}`);
+
+      setName("");
+      setQuote("");
+      setRating(5);
+
+      setSubmitMsg(lang === "pt" ? "Obrigada! Sua avaliação está no ar 💚" : "Thanks! Your review is live 💚");
+
+      await load();
+      rowRef.current?.scrollTo({ left: 0, behavior: "smooth" });
+    } catch (e2) {
+      setErr(e2?.message || "Failed to submit");
+    }
+  };
 
   return (
     <section id="reviews" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
       <div className="text-xs uppercase tracking-wider text-neutral-500">{copy.reviewsTitle}</div>
 
-      {/* Mobile: swipe */}
-      <div className="mt-3 md:hidden -mx-3 px-3 overflow-x-auto flex gap-3 snap-x snap-mandatory">
-        {reviews.map((r, idx) => (
-          <div key={idx} className="min-w-[85%] snap-center rounded-2xl border border-neutral-200 bg-white p-5">
-            <p className="italic">“{r.quote}”</p>
-            <div className="mt-3 text-sm text-neutral-600">— {r.name}</div>
+      <div className="mt-2 flex items-center justify-between gap-3">
+        <h3 className="text-2xl font-extrabold tracking-tight">
+          {lang === "pt" ? "Avaliações" : "Customer reviews"}
+        </h3>
+
+        <div className="hidden md:flex gap-2">
+          <button
+            type="button"
+            onClick={() => scrollByCards(-1)}
+            className="h-10 w-10 rounded-full border border-neutral-200 bg-white hover:bg-neutral-50 grid place-items-center"
+            aria-label="Scroll left"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollByCards(1)}
+            className="h-10 w-10 rounded-full border border-neutral-200 bg-white hover:bg-neutral-50 grid place-items-center"
+            aria-label="Scroll right"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+
+      {/* Scrolling row */}
+      <div
+        ref={rowRef}
+        className="mt-4 -mx-3 px-3 overflow-x-auto flex gap-3 scroll-smooth snap-x snap-mandatory pb-2"
+      >
+        {(loading ? Array.from({ length: 4 }) : visible).map((r, idx) => (
+          <div
+            key={r?.id || idx}
+            className="min-w-[85%] sm:min-w-[420px] snap-start rounded-2xl border border-neutral-200 bg-white p-5"
+          >
+            {loading ? (
+              <div className="animate-pulse">
+                <div className="h-4 bg-neutral-200 rounded w-1/3"></div>
+                <div className="mt-3 h-3 bg-neutral-200 rounded w-full"></div>
+                <div className="mt-2 h-3 bg-neutral-200 rounded w-5/6"></div>
+                <div className="mt-4 h-3 bg-neutral-200 rounded w-1/4"></div>
+              </div>
+            ) : (
+              <>
+                <div className="text-sm text-neutral-600">{stars(r.rating || 5)}</div>
+                <p className="mt-2 italic text-neutral-800">“{r.quote}”</p>
+                <div className="mt-3 text-sm text-neutral-600">— {r.name}</div>
+              </>
+            )}
           </div>
         ))}
       </div>
 
-      {/* Desktop */}
-      <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
-        {reviews.map((r, idx) => (
-          <div key={idx} className="rounded-2xl border border-neutral-200 bg-white p-5">
-            <p className="italic">“{r.quote}”</p>
-            <div className="mt-3 text-sm text-neutral-600">— {r.name}</div>
+      {/* Form */}
+      <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5">
+        <div className="font-semibold">
+          {lang === "pt" ? "Deixe sua avaliação" : "Leave a review"}
+        </div>
+
+        <form className="mt-4 grid gap-3" onSubmit={onSubmit}>
+          <div className="grid md:grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-neutral-600">
+                {lang === "pt" ? "Nome" : "Name"}
+              </label>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="mt-1 w-full rounded-xl border border-neutral-200 px-3 py-2"
+                placeholder={lang === "pt" ? "Seu nome" : "Your name"}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-xs text-neutral-600">
+                {lang === "pt" ? "Nota" : "Rating"}
+              </label>
+              <select
+                value={rating}
+                onChange={(e) => setRating(Number(e.target.value))}
+                className="mt-1 w-full rounded-xl border border-neutral-200 px-3 py-2 bg-white"
+              >
+                {[5, 4, 3, 2, 1].map((n) => (
+                  <option key={n} value={n}>
+                    {n} {lang === "pt" ? "estrela(s)" : "star(s)"}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        ))}
+
+          <div>
+            <label className="text-xs text-neutral-600">
+              {lang === "pt" ? "Mensagem" : "Review"}
+            </label>
+            <textarea
+              value={quote}
+              onChange={(e) => setQuote(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-neutral-200 px-3 py-2 min-h-[110px]"
+              placeholder={lang === "pt" ? "Escreva aqui…" : "Write your review…"}
+              required
+              maxLength={240}
+            />
+            <div className="mt-1 text-xs text-neutral-500">
+              {quote.length}/240
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="submit"
+              className="px-4 py-2 rounded-xl text-white font-semibold shadow-soft"
+              style={{ backgroundColor: brand.green }}
+            >
+              {lang === "pt" ? "Enviar" : "Submit"}
+            </button>
+
+            {submitMsg && <span className="text-sm text-neutral-700">{submitMsg}</span>}
+            {err && <span className="text-sm text-red-600">{err}</span>}
+          </div>
+        </form>
+
+        <div className="mt-3 text-xs text-neutral-500">
+          {lang === "pt"
+            ? "Observação: avaliações são públicas. Evite dados pessoais."
+            : "Note: reviews are public. Please avoid personal info."}
+        </div>
       </div>
     </section>
   );
@@ -616,23 +807,12 @@ function Lightbox({ open, index, media, isVideoUrl, onClose, onPrev, onNext }) {
   const isVid = src && isVideoUrl(src);
 
   return (
-    <div
-      className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm grid place-items-center p-4"
-      role="dialog"
-      aria-modal="true"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm grid place-items-center p-4" role="dialog" aria-modal="true" onClick={onClose}>
       <div className="relative max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="absolute -top-10 right-0 text-white/90 hover:text-white text-2xl"
-          aria-label="Close"
-        >
+        <button onClick={onClose} className="absolute -top-10 right-0 text-white/90 hover:text-white text-2xl" aria-label="Close">
           ×
         </button>
 
-        {/* Media */}
         <div className="w-full rounded-2xl overflow-hidden bg-black">
           {isVid ? (
             <video src={src} controls autoPlay playsInline className="w-full h-full max-h-[80vh] object-contain" />
@@ -641,21 +821,12 @@ function Lightbox({ open, index, media, isVideoUrl, onClose, onPrev, onNext }) {
           )}
         </div>
 
-        {/* Prev/Next */}
         {media.length > 1 && (
           <>
-            <button
-              onClick={onPrev}
-              className="absolute top-1/2 -translate-y-1/2 -left-3 md:-left-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center"
-              aria-label="Previous"
-            >
+            <button onClick={onPrev} className="absolute top-1/2 -translate-y-1/2 -left-3 md:-left-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center" aria-label="Previous">
               ‹
             </button>
-            <button
-              onClick={onNext}
-              className="absolute top-1/2 -translate-y-1/2 -right-3 md:-right-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center"
-              aria-label="Next"
-            >
+            <button onClick={onNext} className="absolute top-1/2 -translate-y-1/2 -right-3 md:-right-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center" aria-label="Next">
               ›
             </button>
           </>
