@@ -38,7 +38,7 @@ export const handler = async (event) => {
     if (event.httpMethod === "POST") {
       const body = JSON.parse(event.body || "{}");
 
-      // honeypot (we'll add a hidden input called "website" later)
+      // Honeypot (bots fill this in)
       if (body.website) return json(200, { ok: true });
 
       const name = clean(body.name).slice(0, 60);
@@ -49,13 +49,13 @@ export const handler = async (event) => {
         return json(400, { ok: false, error: "Missing name, rating, or message." });
       }
 
-      const { error } = await supabase.from("reviews").insert([
-        { name, rating, message, status: "pending" },
-      ]);
+      const { error } = await supabase
+        .from("reviews")
+        .insert([{ name, rating, message, status: "approved" }]);
 
       if (error) return json(500, { ok: false, error: error.message });
 
-      return json(200, { ok: true, message: "Thanks! Your review is pending approval." });
+      return json(200, { ok: true });
     }
 
     return json(405, { ok: false, error: "Method not allowed" });

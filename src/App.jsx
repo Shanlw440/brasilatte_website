@@ -14,7 +14,7 @@ const galleryMedia = Object.values(
 );
 const isVideoUrl = (u) => /\.(mp4|webm|ogg|mov)$/i.test(u);
 
-/* ====== About photo (optional) ======
+/* ====== About photo (optional)
    Save as: src/assets/about_osana.(webp|jpg|jpeg|png|avif) */
 const aboutImg =
   Object.values(
@@ -27,8 +27,11 @@ const aboutImg =
 const brand = { green: "#099E48", yellow: "#FFDD00", blue: "#0A2B7E" };
 const WHATSAPP_NUMBER = "447594754354";
 
-// ✅ Use Netlify Functions URL directly (works on Netlify + netlify dev)
-const REVIEWS_API = "/.netlify/functions/reviews";
+/* ✅ Always use Netlify dev server for functions in DEV to avoid proxy errors */
+const REVIEWS_API =
+  import.meta.env.DEV
+    ? "http://localhost:8888/.netlify/functions/reviews"
+    : "/.netlify/functions/reviews";
 
 export default function App() {
   const [lang, setLang] = useState(() => localStorage.getItem("brasil_latte_lang") || "en");
@@ -151,7 +154,7 @@ export default function App() {
       <Reviews copy={copy} lang={lang} />
 
       <About copy={copy} />
-      <Footer copy={copy} />
+      <Footer />
 
       {/* Lightbox */}
       <Lightbox
@@ -177,10 +180,22 @@ function Header({ lang, setLang, copy }) {
           <div className="flex flex-col items-start">
             <img src={Logo} alt="Brasilatte logo" className="h-16 w-auto" />
             <div className="mt-1 flex items-center gap-2">
-              <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Instagram @brasilatte">
+              <a
+                href="https://instagram.com/brasilatte"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1 rounded-md hover:bg-neutral-100"
+                aria-label="Instagram @brasilatte"
+              >
                 <InstagramIcon className="h-5 w-5" />
               </a>
-              <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Facebook">
+              <a
+                href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1 rounded-md hover:bg-neutral-100"
+                aria-label="Facebook"
+              >
                 <FacebookIcon className="h-5 w-5" />
               </a>
             </div>
@@ -203,10 +218,22 @@ function Header({ lang, setLang, copy }) {
         <div className="hidden md:flex items-center gap-4 relative">
           <img src={Logo} alt="Brasilatte logo" className="h-32 lg:h-36 w-auto" />
           <div className="flex items-center gap-2">
-            <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Instagram @brasilatte">
+            <a
+              href="https://instagram.com/brasilatte"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1 rounded-md hover:bg-neutral-100"
+              aria-label="Instagram @brasilatte"
+            >
               <InstagramIcon className="h-5 w-5" />
             </a>
-            <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1 rounded-md hover:bg-neutral-100" aria-label="Facebook">
+            <a
+              href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noreferrer"
+              className="p-1 rounded-md hover:bg-neutral-100"
+              aria-label="Facebook"
+            >
               <FacebookIcon className="h-5 w-5" />
             </a>
           </div>
@@ -241,16 +268,22 @@ function FlagToggle({ lang, setLang }) {
     <div className="inline-flex rounded-full border border-neutral-300 bg-white overflow-hidden text-sm">
       <button
         onClick={() => setLang("en")}
-        className={`px-2 py-1.5 flex items-center gap-2 ${lang === "en" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"}`}
-        aria-pressed={lang === "en"} title="English"
+        className={`px-2 py-1.5 flex items-center gap-2 ${
+          lang === "en" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"
+        }`}
+        aria-pressed={lang === "en"}
+        title="English"
       >
         <img src={UK} alt="English (UK)" className="h-4 w-auto" />
         <span>EN</span>
       </button>
       <button
         onClick={() => setLang("pt")}
-        className={`px-2 py-1.5 flex items-center gap-2 ${lang === "pt" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"}`}
-        aria-pressed={lang === "pt"} title="Português (Brasil)"
+        className={`px-2 py-1.5 flex items-center gap-2 ${
+          lang === "pt" ? "bg-neutral-900 text-white" : "hover:bg-neutral-50"
+        }`}
+        aria-pressed={lang === "pt"}
+        title="Português (Brasil)"
       >
         <img src={BR} alt="Português (Brasil)" className="h-4 w-auto" />
         <span>PT-BR</span>
@@ -266,7 +299,9 @@ function Hero({ copy, waLink, sinceLabel }) {
       {/* Left: text */}
       <div className="min-w-0">
         <div className="text-xs uppercase tracking-wider text-neutral-500">{sinceLabel}</div>
-        <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight mt-1 leading-tight">{copy.heroTitle}</h2>
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight mt-1 leading-tight">
+          {copy.heroTitle}
+        </h2>
         <p className="mt-3 md:mt-4 text-sm sm:text-base md:text-lg text-neutral-700">{copy.heroSubtitle}</p>
 
         <div className="mt-4 md:mt-6">
@@ -296,7 +331,9 @@ function Hero({ copy, waLink, sinceLabel }) {
               src={MainPhoto}
               alt="Brasilatte — freshly made Brazilian snacks"
               className="w-full h-[200px] sm:h-[240px] md:h-[340px] lg:h-[400px] object-contain object-center"
-              loading="eager" decoding="async" fetchpriority="high"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
             />
           </div>
         </div>
@@ -305,7 +342,7 @@ function Hero({ copy, waLink, sinceLabel }) {
   );
 }
 
-/* ================= Menu (image-less grid of cards) ================= */
+/* ================= Menu ================= */
 function MenuSections({ lang, copy }) {
   const fried = [
     { en: "Coxinha de frango (chicken coxinha)", pt: "Coxinha de frango" },
@@ -326,8 +363,14 @@ function MenuSections({ lang, copy }) {
 
   const pies = [
     { en: "Chicken pie (chicken, mozzarella, tomatoes)", pt: "Torta de frango (frango, mozzarella, tomate)" },
-    { en: "Chicken empadão (chicken, mozzarella, requeijão, olives; optional sweetcorn, peas)", pt: "Empadão de frango (frango, mozzarella, requeijão, azeitona; opcional milho, ervilha)" },
-    { en: "Cold pie — chicken or tuna (carrots, mayo, requeijão, batata palha; topped with mash or mayo)", pt: "Torta fria — frango ou atum (cenoura, maionese, requeijão, batata palha; cobertura purê de batata ou maionese)" },
+    {
+      en: "Chicken empadão (chicken, mozzarella, requeijão, olives; optional sweetcorn, peas)",
+      pt: "Empadão de frango (frango, mozzarella, requeijão, azeitona; opcional milho, ervilha)",
+    },
+    {
+      en: "Cold pie — chicken or tuna (carrots, mayo, requeijão, batata palha; topped with mash or mayo)",
+      pt: "Torta fria — frango ou atum (cenoura, maionese, requeijão, batata palha; cobertura purê de batata ou maionese)",
+    },
   ];
 
   const bakery = [
@@ -367,7 +410,6 @@ function MenuSections({ lang, copy }) {
   );
 }
 
-/* ===== Grid of compact cards: 2 / 3 / 4 per row ===== */
 function MenuListSection({ title, items, subtitle }) {
   return (
     <section className="mt-8">
@@ -402,7 +444,8 @@ function Gallery({ copy, onOpen }) {
 
       {galleryMedia.length === 0 ? (
         <div className="mt-4 rounded-2xl border border-dashed border-neutral-300 p-6 text-neutral-600">
-          Drop media into <code>src/assets/gallery/</code> (jpg, jpeg, png, webp, avif, mp4, webm, ogg, mov) and they’ll appear here automatically.
+          Drop media into <code>src/assets/gallery/</code> (jpg, jpeg, png, webp, avif, mp4, webm, ogg, mov) and they’ll
+          appear here automatically.
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
@@ -456,7 +499,9 @@ function HowToOrder({ copy, waLink }) {
             {copy.orderBtn}
           </a>
           <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("65 Oxford Road, Kidlington, OX5 2BS")}`}
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+              "65 Oxford Road, Kidlington, OX5 2BS"
+            )}`}
             className="px-4 py-2 rounded-xl font-semibold"
             style={{ backgroundColor: brand.blue, color: "white" }}
             target="_blank"
@@ -471,38 +516,18 @@ function HowToOrder({ copy, waLink }) {
   );
 }
 
-/* ================= Reviews (LIVE + Carousel + Form) ================= */
+/* ================= Reviews (LIVE + No Dupes + Horizontal Row) ================= */
 function Reviews({ copy, lang }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
   const [name, setName] = useState("");
-  const [quote, setQuote] = useState("");
+  const [message, setMessage] = useState("");
   const [rating, setRating] = useState(5);
   const [submitMsg, setSubmitMsg] = useState("");
 
   const rowRef = useRef(null);
-
-  const fallback =
-    copy.reviewsTitle === "Reviews"
-      ? [
-          { id: "f1", name: "Livia", quote: "The coxinhas are addictive — perfect for parties!", rating: 5, lang: "en" },
-          { id: "f2", name: "Marcia", quote: "Tastes like home. The empadão was a hit with the family.", rating: 5, lang: "en" },
-          { id: "f3", name: "Joe", quote: "Great value snack boxes and fast WhatsApp replies.", rating: 5, lang: "en" },
-          { id: "f4", name: "Moises", quote: "Pastéis came out crispy and fresh. Will order again.", rating: 5, lang: "en" },
-        ]
-      : [
-          { id: "f1", name: "Lívia", quote: "As coxinhas são viciantes — perfeitas para festas!", rating: 5, lang: "pt" },
-          { id: "f2", name: "Márcia", quote: "Sabor de casa. O empadão fez sucesso na família.", rating: 5, lang: "pt" },
-          { id: "f3", name: "Joe", quote: "Caixas de salgados com ótimo custo-benefício e resposta rápida no WhatsApp.", rating: 5, lang: "pt" },
-          { id: "f4", name: "Moisés", quote: "Os pastéis chegaram crocantes e fresquinhos. Vou pedir de novo.", rating: 5, lang: "pt" },
-        ];
-
-  const visible = useMemo(() => {
-    const fromApi = items.filter((r) => (lang === "pt" ? r.lang === "pt" : r.lang !== "pt"));
-    return fromApi.length ? fromApi : fallback;
-  }, [items, lang]);
 
   const stars = (n) => "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n);
 
@@ -513,13 +538,17 @@ function Reviews({ copy, lang }) {
       const res = await fetch(REVIEWS_API, { headers: { accept: "application/json" } });
       const text = await res.text();
       let data = null;
-      try { data = JSON.parse(text); } catch {}
+      try {
+        data = JSON.parse(text);
+      } catch {}
 
-      if (!res.ok) throw new Error(data?.error || text || `HTTP ${res.status}`);
+      if (!res.ok || !data?.ok) throw new Error(data?.error || text || `HTTP ${res.status}`);
 
-      // supports either {ok:true,reviews:[]} or {reviews:[]}
-      const reviews = Array.isArray(data?.reviews) ? data.reviews : [];
-      setItems(reviews);
+      // ✅ set directly (no append) and de-dupe by id just in case dev double-runs effects
+      const incoming = Array.isArray(data?.reviews) ? data.reviews : [];
+      const map = new Map();
+      incoming.forEach((r) => map.set(r.id, r));
+      setItems(Array.from(map.values()));
     } catch (e) {
       setErr(e?.message || "Failed to load reviews");
     } finally {
@@ -530,6 +559,13 @@ function Reviews({ copy, lang }) {
   useEffect(() => {
     load();
   }, [load]);
+
+  // ✅ De-dupe again defensively (covers any edge cases)
+  const visible = useMemo(() => {
+    const map = new Map();
+    (items || []).forEach((r) => map.set(r.id, r));
+    return Array.from(map.values());
+  }, [items]);
 
   const scrollByCards = (dir) => {
     const el = rowRef.current;
@@ -543,7 +579,7 @@ function Reviews({ copy, lang }) {
     setErr("");
 
     try {
-      const payload = { name, quote, rating, lang };
+      const payload = { name, rating, message, website: "" }; // honeypot
       const res = await fetch(REVIEWS_API, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -551,19 +587,22 @@ function Reviews({ copy, lang }) {
       });
 
       const text = await res.text();
-      console.log("REVIEWS POST status:", res.status);
-      console.log("REVIEWS POST body:", text);
-
       let data = null;
-      try { data = JSON.parse(text); } catch {}
+      try {
+        data = JSON.parse(text);
+      } catch {}
 
       if (!res.ok || !data?.ok) throw new Error(data?.error || text || `HTTP ${res.status}`);
 
       setName("");
-      setQuote("");
+      setMessage("");
       setRating(5);
 
-      setSubmitMsg(lang === "pt" ? "Obrigada! Sua avaliação está no ar 💚" : "Thanks! Your review is live 💚");
+      setSubmitMsg(
+        lang === "pt"
+          ? "Obrigada! Sua avaliação foi enviada e ficará visível após aprovação."
+          : "Thanks! Your review was submitted and will appear after approval."
+      );
 
       await load();
       rowRef.current?.scrollTo({ left: 0, behavior: "smooth" });
@@ -577,9 +616,7 @@ function Reviews({ copy, lang }) {
       <div className="text-xs uppercase tracking-wider text-neutral-500">{copy.reviewsTitle}</div>
 
       <div className="mt-2 flex items-center justify-between gap-3">
-        <h3 className="text-2xl font-extrabold tracking-tight">
-          {lang === "pt" ? "Avaliações" : "Customer reviews"}
-        </h3>
+        <h3 className="text-2xl font-extrabold tracking-tight">{lang === "pt" ? "Avaliações" : "Customer reviews"}</h3>
 
         <div className="hidden md:flex gap-2">
           <button
@@ -601,14 +638,14 @@ function Reviews({ copy, lang }) {
         </div>
       </div>
 
-      {/* Scrolling row */}
+      {/* Scrolling row (no duplication) */}
       <div
         ref={rowRef}
         className="mt-4 -mx-3 px-3 overflow-x-auto flex gap-3 scroll-smooth snap-x snap-mandatory pb-2"
       >
         {(loading ? Array.from({ length: 4 }) : visible).map((r, idx) => (
           <div
-            key={r?.id || idx}
+            key={r?.id ?? `sk_${idx}`}
             className="min-w-[85%] sm:min-w-[420px] snap-start rounded-2xl border border-neutral-200 bg-white p-5"
           >
             {loading ? (
@@ -621,7 +658,7 @@ function Reviews({ copy, lang }) {
             ) : (
               <>
                 <div className="text-sm text-neutral-600">{stars(r.rating || 5)}</div>
-                <p className="mt-2 italic text-neutral-800">“{r.quote}”</p>
+                <p className="mt-2 italic text-neutral-800">“{r.message}”</p>
                 <div className="mt-3 text-sm text-neutral-600">— {r.name}</div>
               </>
             )}
@@ -631,16 +668,12 @@ function Reviews({ copy, lang }) {
 
       {/* Form */}
       <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5">
-        <div className="font-semibold">
-          {lang === "pt" ? "Deixe sua avaliação" : "Leave a review"}
-        </div>
+        <div className="font-semibold">{lang === "pt" ? "Deixe sua avaliação" : "Leave a review"}</div>
 
         <form className="mt-4 grid gap-3" onSubmit={onSubmit}>
           <div className="grid md:grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-neutral-600">
-                {lang === "pt" ? "Nome" : "Name"}
-              </label>
+              <label className="text-xs text-neutral-600">{lang === "pt" ? "Nome" : "Name"}</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -651,9 +684,7 @@ function Reviews({ copy, lang }) {
             </div>
 
             <div>
-              <label className="text-xs text-neutral-600">
-                {lang === "pt" ? "Nota" : "Rating"}
-              </label>
+              <label className="text-xs text-neutral-600">{lang === "pt" ? "Nota" : "Rating"}</label>
               <select
                 value={rating}
                 onChange={(e) => setRating(Number(e.target.value))}
@@ -669,20 +700,16 @@ function Reviews({ copy, lang }) {
           </div>
 
           <div>
-            <label className="text-xs text-neutral-600">
-              {lang === "pt" ? "Mensagem" : "Review"}
-            </label>
+            <label className="text-xs text-neutral-600">{lang === "pt" ? "Mensagem" : "Review"}</label>
             <textarea
-              value={quote}
-              onChange={(e) => setQuote(e.target.value)}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
               className="mt-1 w-full rounded-xl border border-neutral-200 px-3 py-2 min-h-[110px]"
               placeholder={lang === "pt" ? "Escreva aqui…" : "Write your review…"}
               required
               maxLength={240}
             />
-            <div className="mt-1 text-xs text-neutral-500">
-              {quote.length}/240
-            </div>
+            <div className="mt-1 text-xs text-neutral-500">{message.length}/240</div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -744,7 +771,7 @@ function About({ copy }) {
 }
 
 /* ================= Footer ================= */
-function Footer({ copy }) {
+function Footer() {
   return (
     <footer className="mt-12">
       <div className="bg-neutral-50 border-t border-neutral-200">
@@ -768,7 +795,13 @@ function Footer({ copy }) {
               <a href="https://instagram.com/brasilatte" target="_blank" rel="noreferrer" className="p-1" aria-label="Instagram">
                 <InstagramIcon className="h-5 w-5" />
               </a>
-              <a href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="p-1" aria-label="Facebook">
+              <a
+                href="https://www.facebook.com/share/1ZTWWm2Dfe/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1"
+                aria-label="Facebook"
+              >
                 <FacebookIcon className="h-5 w-5" />
               </a>
             </div>
@@ -788,7 +821,7 @@ function Footer({ copy }) {
   );
 }
 
-/* ================= Lightbox (Gallery modal) ================= */
+/* ================= Lightbox ================= */
 function Lightbox({ open, index, media, isVideoUrl, onClose, onPrev, onNext }) {
   useEffect(() => {
     if (!open) return;
@@ -807,7 +840,12 @@ function Lightbox({ open, index, media, isVideoUrl, onClose, onPrev, onNext }) {
   const isVid = src && isVideoUrl(src);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm grid place-items-center p-4" role="dialog" aria-modal="true" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm grid place-items-center p-4"
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+    >
       <div className="relative max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} className="absolute -top-10 right-0 text-white/90 hover:text-white text-2xl" aria-label="Close">
           ×
@@ -823,10 +861,18 @@ function Lightbox({ open, index, media, isVideoUrl, onClose, onPrev, onNext }) {
 
         {media.length > 1 && (
           <>
-            <button onClick={onPrev} className="absolute top-1/2 -translate-y-1/2 -left-3 md:-left-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center" aria-label="Previous">
+            <button
+              onClick={onPrev}
+              className="absolute top-1/2 -translate-y-1/2 -left-3 md:-left-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center"
+              aria-label="Previous"
+            >
               ‹
             </button>
-            <button onClick={onNext} className="absolute top-1/2 -translate-y-1/2 -right-3 md:-right-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center" aria-label="Next">
+            <button
+              onClick={onNext}
+              className="absolute top-1/2 -translate-y-1/2 -right-3 md:-right-6 h-10 w-10 rounded-full bg-white/90 hover:bg-white text-neutral-900 grid place-items-center"
+              aria-label="Next"
+            >
               ›
             </button>
           </>
