@@ -435,12 +435,42 @@ function MenuListSection({ title, items, subtitle }) {
   );
 }
 
-/* ================= Gallery ================= */
+/* ================= Gallery (scrolling album) ================= */
 function Gallery({ copy, onOpen }) {
+  const rowRef = useRef(null);
+
+  const scrollBy = (dir) => {
+    const el = rowRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * 520, behavior: "smooth" });
+  };
+
   return (
     <section id="gallery" className="max-w-6xl mx-auto px-3 md:px-4 py-10">
       <div className="text-xs uppercase tracking-wider text-neutral-500">{copy.galleryEyebrow}</div>
-      <h3 className="text-2xl font-extrabold tracking-tight mt-1">{copy.galleryTitle}</h3>
+
+      <div className="mt-1 flex items-center justify-between gap-3">
+        <h3 className="text-2xl font-extrabold tracking-tight">{copy.galleryTitle}</h3>
+
+        <div className="hidden md:flex gap-2">
+          <button
+            type="button"
+            onClick={() => scrollBy(-1)}
+            className="h-10 w-10 rounded-full border border-neutral-200 bg-white hover:bg-neutral-50 grid place-items-center"
+            aria-label="Scroll left"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollBy(1)}
+            className="h-10 w-10 rounded-full border border-neutral-200 bg-white hover:bg-neutral-50 grid place-items-center"
+            aria-label="Scroll right"
+          >
+            ›
+          </button>
+        </div>
+      </div>
 
       {galleryMedia.length === 0 ? (
         <div className="mt-4 rounded-2xl border border-dashed border-neutral-300 p-6 text-neutral-600">
@@ -448,37 +478,47 @@ function Gallery({ copy, onOpen }) {
           appear here automatically.
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-          {galleryMedia.map((src, i) => (
-            <button
-              key={i}
-              onClick={() => onOpen(i)}
-              className="group aspect-square overflow-hidden rounded-xl border border-neutral-200 bg-white cursor-zoom-in"
-              aria-label={`Open media ${i + 1}`}
-            >
-              {isVideoUrl(src) ? (
-                <video
-                  src={src}
-                  playsInline
-                  preload="metadata"
-                  className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-                  muted
-                />
-              ) : (
-                <img
-                  src={src}
-                  alt={`Gallery media ${i + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-                  loading="lazy"
-                />
-              )}
-            </button>
-          ))}
+        <div className="mt-4">
+          <div
+            ref={rowRef}
+            className="overflow-x-auto scroll-smooth -mx-3 px-3 pb-2 flex gap-3 snap-x snap-mandatory"
+          >
+            {galleryMedia.map((src, i) => (
+              <button
+                key={i}
+                onClick={() => onOpen(i)}
+                className="group snap-start shrink-0 w-[78%] sm:w-[46%] md:w-[360px] aspect-[4/3] overflow-hidden rounded-2xl border border-neutral-200 bg-white cursor-zoom-in"
+                aria-label={`Open media ${i + 1}`}
+              >
+                {isVideoUrl(src) ? (
+                  <video
+                    src={src}
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                    muted
+                  />
+                ) : (
+                  <img
+                    src={src}
+                    alt={`Gallery media ${i + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                    loading="lazy"
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-2 text-xs text-neutral-500">
+            <div className="mt-2 text-xs text-neutral-500">Scroll to see more →</div>
+          </div>
         </div>
       )}
     </section>
   );
 }
+
 
 /* ================= How to order ================= */
 function HowToOrder({ copy, waLink }) {
