@@ -1,3 +1,4 @@
+import captions from "./assets/gallery/captions.json";
 import React, { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import Logo from "./assets/BrasilLatte.png";
 import UK from "./assets/flags/uk.svg";
@@ -5,13 +6,24 @@ import BR from "./assets/flags/br.svg";
 import MainPhoto from "./assets/main_photo.JPG?url";
 import { messages } from "./i18n";
 
-/* ====== Gallery (auto-load images & video) ====== */
-const galleryMedia = Object.values(
+const galleryMedia = Object.entries(
   import.meta.glob("./assets/gallery/*.{jpg,jpeg,png,webp,avif,mp4,webm,ogg,mov}", {
     eager: true,
     as: "url",
   })
-);
+)
+  .map(([path, url]) => {
+    const filename = path.split("/").pop() || "";
+    return {
+      path,
+      url,
+      filename,
+      caption: captions[filename] || "",
+    };
+  })
+  // newest first
+  .sort((a, b) => b.filename.localeCompare(a.filename, undefined, { numeric: true, sensitivity: "base" }));
+
 const isVideoUrl = (u) => /\.(mp4|webm|ogg|mov)$/i.test(u);
 
 /* ====== About photo (optional)
@@ -29,9 +41,7 @@ const WHATSAPP_NUMBER = "447594754354";
 
 /* ✅ Always use Netlify dev server for functions in DEV to avoid proxy errors */
 const REVIEWS_API =
-  import.meta.env.DEV
-    ? "http://localhost:8888/.netlify/functions/reviews"
-    : "/.netlify/functions/reviews";
+  import.meta.env.DEV ? "http://localhost:8888/.netlify/functions/reviews" : "/.netlify/functions/reviews";
 
 export default function App() {
   const [lang, setLang] = useState(() => localStorage.getItem("brasil_latte_lang") || "en");
@@ -42,11 +52,19 @@ export default function App() {
   const openLightbox = (index) => setLightbox({ open: true, index });
   const closeLightbox = () => setLightbox({ open: false, index: 0 });
   const prevLightbox = useCallback(
-    () => setLightbox((s) => ({ open: true, index: (s.index - 1 + galleryMedia.length) % galleryMedia.length })),
+    () =>
+      setLightbox((s) => ({
+        open: true,
+        index: (s.index - 1 + galleryMedia.length) % galleryMedia.length,
+      })),
     []
   );
   const nextLightbox = useCallback(
-    () => setLightbox((s) => ({ open: true, index: (s.index + 1) % galleryMedia.length })),
+    () =>
+      setLightbox((s) => ({
+        open: true,
+        index: (s.index + 1) % galleryMedia.length,
+      })),
     []
   );
 
@@ -483,42 +501,45 @@ function Gallery({ copy, onOpen }) {
             ref={rowRef}
             className="overflow-x-auto scroll-smooth -mx-3 px-3 pb-2 flex gap-3 snap-x snap-mandatory"
           >
-            {galleryMedia.map((src, i) => (
+            {galleryMedia.map((item, i) => (
               <button
-                key={i}
+                key={item.path}
                 onClick={() => onOpen(i)}
-                className="group snap-start shrink-0 w-[78%] sm:w-[46%] md:w-[360px] aspect-[4/3] overflow-hidden rounded-2xl border border-neutral-200 bg-white cursor-zoom-in"
+                className="group snap-start shrink-0 w-[78%] sm:w-[46%] md:w-[360px] overflow-hidden rounded-2xl border border-neutral-200 bg-white cursor-zoom-in text-left"
                 aria-label={`Open media ${i + 1}`}
               >
-                {isVideoUrl(src) ? (
-                  <video
-                    src={src}
-                    playsInline
-                    preload="metadata"
-                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-                    muted
-                  />
-                ) : (
-                  <img
-                    src={src}
-                    alt={`Gallery media ${i + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-                    loading="lazy"
-                  />
+                <div className="aspect-[4/3] overflow-hidden">
+                  {isVideoUrl(item.url) ? (
+                    <video
+                      src={item.url}
+                      playsInline
+                      preload="metadata"
+                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                      muted
+                    />
+                  ) : (
+                    <img
+                      src={item.url}
+                      alt={item.caption || `Gallery media ${i + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+
+                {item.caption && (
+                  <div className="px-4 py-3 text-sm text-neutral-700 border-t border-neutral-200">{item.caption}</div>
                 )}
               </button>
             ))}
           </div>
 
-          <div className="mt-2 text-xs text-neutral-500">
-            <div className="mt-2 text-xs text-neutral-500">Scroll to see more →</div>
-          </div>
+          <div className="mt-2 text-xs text-neutral-500">Scroll to see more →</div>
         </div>
       )}
     </section>
   );
 }
-
 
 /* ================= How to order ================= */
 function HowToOrder({ copy, waLink }) {
@@ -539,9 +560,7 @@ function HowToOrder({ copy, waLink }) {
             {copy.orderBtn}
           </a>
           <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-              "65 Oxford Road, Kidlington, OX5 2BS"
-            )}`}
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("65 Oxford Road, Kidlington, OX5 2BS")}`}
             className="px-4 py-2 rounded-xl font-semibold"
             style={{ backgroundColor: brand.blue, color: "white" }}
             target="_blank"
@@ -767,9 +786,7 @@ function Reviews({ copy, lang }) {
         </form>
 
         <div className="mt-3 text-xs text-neutral-500">
-          {lang === "pt"
-            ? "Observação: avaliações são públicas. Evite dados pessoais."
-            : "Note: reviews are public. Please avoid personal info."}
+          {lang === "pt" ? "Observação: avaliações são públicas. Evite dados pessoais." : "Note: reviews are public. Please avoid personal info."}
         </div>
       </div>
     </section>
@@ -876,16 +893,11 @@ function Lightbox({ open, index, media, isVideoUrl, onClose, onPrev, onNext }) {
 
   if (!open || !media?.length) return null;
 
-  const src = media[index] || null;
+  const src = media[index]?.url || null;
   const isVid = src && isVideoUrl(src);
 
   return (
-    <div
-      className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm grid place-items-center p-4"
-      role="dialog"
-      aria-modal="true"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm grid place-items-center p-4" role="dialog" aria-modal="true" onClick={onClose}>
       <div className="relative max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} className="absolute -top-10 right-0 text-white/90 hover:text-white text-2xl" aria-label="Close">
           ×
